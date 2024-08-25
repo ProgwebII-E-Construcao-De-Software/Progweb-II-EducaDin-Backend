@@ -52,9 +52,9 @@ git clone https://github.com/ProgwebII-E-Construcao-De-Software/Progweb-II-Educa
 cd Progweb-II-EducaDin-Backend
 
 ### Configurar o Banco de Dados
-CREATE DATABASE educadin;
-CREATE USER educadin_user WITH PASSWORD 'sua_senha_segura';
-GRANT ALL PRIVILEGES ON DATABASE educadin_db TO educadin_user;
+- CREATE DATABASE educadin;
+- CREATE USER educadin_user WITH PASSWORD 'sua_senha_segura';
+- GRANT ALL PRIVILEGES ON DATABASE educadin_db TO educadin_user;
 
 ### Configure o 'application.properties'
 spring.datasource.url=jdbc:postgresql://localhost:5433/educadin
