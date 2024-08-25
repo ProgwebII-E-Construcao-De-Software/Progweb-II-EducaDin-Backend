@@ -1,5 +1,5 @@
 # Progweb-II-EducaDin-Backend
-Repositório para versionamento e gerenciamento do backend da aplicação EducaDin para o projeto de Progweb 2
+>Repositório para versionamento e gerenciamento do backend da aplicação EducaDin para o projeto de Progweb 2
 
 ## Descrição do Projeto EducaDin
 >O EducaDin é uma aplicação de gestão financeira pessoal que foi desenvolvida para atender às necessidades
