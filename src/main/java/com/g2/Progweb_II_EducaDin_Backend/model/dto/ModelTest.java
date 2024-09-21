@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.model.dto;
 
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import br.ueg.progweb2.arquitetura.model.MandatoryField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,14 +19,16 @@ public class ModelTest implements GenericModel<Long> {
     @Id
     Long id;
 
+    @MandatoryField(name = "name", type = "String")
     @Column(nullable = false)
     String nome;
 
+    @MandatoryField(name = "description", type = "String")
     @Column(nullable = false)
-    String descricao;
+    String description;
 
     @Column()
-    String apelido;
+    String nick;
 
     @Override
     public Long getId() {
