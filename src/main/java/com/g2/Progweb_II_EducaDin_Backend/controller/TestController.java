@@ -17,8 +17,7 @@ public class TestController {
     @Operation(description = "End point to test")
     public String testModelReflection()
     {
-        ModelTest md = new ModelTest(5L, "Nome", "", "blá");
-        System.out.println();
+        ModelTest md = new ModelTest(5L, "Michael Jackson", "", "Mike");
         var response = ModelReflection.getInvalidMandatoryFields(md);
 
         return response.toString();

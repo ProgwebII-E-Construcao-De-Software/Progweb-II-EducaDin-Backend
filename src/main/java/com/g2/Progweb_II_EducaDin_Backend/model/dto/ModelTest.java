@@ -19,16 +19,16 @@ public class ModelTest implements GenericModel<Long> {
     @Id
     Long id;
 
-    @MandatoryField(name = "nome", type = "String")
+    @MandatoryField(name = "name", type = "String")
     @Column(nullable = false)
     String nome;
 
-    @MandatoryField(name = "nome", type = "String")
+    @MandatoryField(name = "description", type = "String")
     @Column(nullable = false)
-    String descricao;
+    String description;
 
     @Column()
-    String apelido;
+    String nick;
 
     @Override
     public Long getId() {
