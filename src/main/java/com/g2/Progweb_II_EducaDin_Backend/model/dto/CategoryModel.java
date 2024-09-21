@@ -38,7 +38,7 @@ public class CategoryModel implements GenericModel<Long> {
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", isExpense=" + expense +
+                ", Expense=" + expense +
                 '}';
     }
 }
