@@ -20,6 +20,7 @@ public class TestController {
         ModelTest md = new ModelTest(5L, "Nome", "", "blá");
         System.out.println();
         var response = ModelReflection.getInvalidMandatoryFields(md);
+
         return response.toString();
 
     }
