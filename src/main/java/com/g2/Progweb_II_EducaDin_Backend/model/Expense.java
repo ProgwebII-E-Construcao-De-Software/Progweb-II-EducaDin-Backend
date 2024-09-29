@@ -1,10 +1,14 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import br.ueg.progweb2.arquitetura.model.MandatoryField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @NoArgsConstructor
@@ -17,12 +21,29 @@ public class Expense implements GenericModel<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private double amount;
-
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name="categoty_id")
     private Category category;
+
+    @MandatoryField(type = "String", name = "Name")
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @MandatoryField(type = "String", name = "Description")
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @MandatoryField(type = "Double", name = "Price")
+    @Column(name = "amount", nullable = false)
+    private Double amount;
+
+    @MandatoryField(type = "boolean", name = "fixed")
+    @Column(name = "fixed")
+    private boolean fixed;
+
+    @MandatoryField(type = "Date", name = "date")
+    @Column(name = "date")
+    private LocalDate date;
 
     @Override
     public Long getId() {
@@ -35,7 +56,19 @@ public class Expense implements GenericModel<Long> {
     }
 
     @Override
-    public String toString() {
-        return String.format("Expense { Id: %d, Amount: %.2f, Category: %s }", id, amount, category.getName());
+    public String toString(){
+        return String.format("""
+                        Id: %d
+                        Name: %s
+                        Description: %s
+                        Price: %.2f
+                        Is fixed: %s
+                        Date: %s""",
+                id,
+                name,
+                description,
+                amount,
+                fixed,
+                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 }
