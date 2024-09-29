@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
-import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
+import br.ueg.progweb2.arquitetura.model.MandatoryField;
+
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,8 @@ public class Income implements GenericModel<Long> {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private CategoryModel category;
+  
+    private Category category;
 
     @MandatoryField(type = "String", name = "Name")
     @Column(name = "name", nullable = false)
