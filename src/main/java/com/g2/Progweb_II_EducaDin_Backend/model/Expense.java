@@ -1,4 +1,4 @@
-package com.g2.Progweb_II_EducaDin_Backend.model.dto;
+package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import jakarta.persistence.*;
@@ -10,17 +10,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CategoryModel implements GenericModel<Long> {
+@Table(name = "expense")
+public class Expense implements GenericModel<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private double amount;
 
-    @Column(nullable = false)
-    private boolean expense;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Override
     public Long getId() {
@@ -34,10 +36,6 @@ public class CategoryModel implements GenericModel<Long> {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", Expense=" + expense +
-                '}';
+        return String.format("Expense { Id: %d, Amount: %.2f, Category: %s }", id, amount, category.getName());
     }
 }
