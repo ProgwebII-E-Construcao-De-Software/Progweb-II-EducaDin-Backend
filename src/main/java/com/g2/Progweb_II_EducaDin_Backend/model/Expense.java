@@ -61,7 +61,7 @@ public class Expense implements GenericModel<Long> {
                         Id: %d
                         Name: %s
                         Description: %s
-                        Price: %.2f
+                        Amount: %.2f
                         Is fixed: %s
                         Date: %s""",
                 id,
