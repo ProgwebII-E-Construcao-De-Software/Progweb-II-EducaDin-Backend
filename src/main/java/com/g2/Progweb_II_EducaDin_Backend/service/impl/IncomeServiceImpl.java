@@ -26,7 +26,8 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToCreate(Income newModel) {
-        categoryService.create(newModel.getCategory());
+        newModel.setCategory(categoryService.create(newModel.getCategory()));
+
     }
 
     @Override
@@ -62,7 +63,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     public List<Income> listAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override

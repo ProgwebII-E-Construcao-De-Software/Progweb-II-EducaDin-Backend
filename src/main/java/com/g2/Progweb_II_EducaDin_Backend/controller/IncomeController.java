@@ -5,6 +5,7 @@ import com.g2.Progweb_II_EducaDin_Backend.mapper.IncomeMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTOCreateUpdate;
+import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeListDTO;
 import com.g2.Progweb_II_EducaDin_Backend.service.IncomeService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ public class IncomeController extends GenericCRUDController<
         IncomeDTO,
         IncomeDTOCreateUpdate,
         IncomeDTOCreateUpdate,
-        IncomeDTO,
+        IncomeListDTO,
         Income,
         Long,
         IncomeService,
