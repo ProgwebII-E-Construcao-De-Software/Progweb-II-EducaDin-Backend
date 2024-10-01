@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
+import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
@@ -26,23 +27,55 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToCreate(Income newModel) {
-        newModel.setCategory(categoryService.create(newModel.getCategory()));
+        String name = newModel.getCategory().getName();
+        if(categoryService.existsByName(name)){
+            newModel.setCategory(categoryService.create(categoryService.getCategoryByName(name)));
+        }
+        else{
+            newModel.setCategory(categoryService.create(newModel.getCategory()));
+        }
 
     }
 
     @Override
     protected void validateBusinessLogicToCreate(Income newModel) {
         validateBusinessLogic(newModel);
+        validateAmbiguous(newModel);
+    }
+
+    /**
+     *
+     * @param newModel
+     * Method validates if a given instance its too
+     * similar im crucial attributes that make
+     * them both invalids by the business logic
+     *
+     * @throws BusinessException ErrorValidation.GENERAL
+     */
+    private void validateAmbiguous(Income newModel) {
+        List<Income> similarModels = repository.findAllByName(newModel.getName());
+        for(Income similarModel : similarModels){
+            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"repeat", "amount", "leadTime", "description"})){
+                throw new BusinessException(ErrorValidation.GENERAL);
+            }
+        }
     }
 
     @Override
     protected void prepareToUpdate(Income newModel, Income model) {
-
+        String name = newModel.getCategory().getName();
+        if(categoryService.existsByName(name)){
+            newModel.setCategory(categoryService.create(categoryService.getCategoryByName(name)));
+        }
+        else{
+            newModel.setCategory(categoryService.create(newModel.getCategory()));
+        }
     }
 
     @Override
     protected void validateBusinessLogicToUpdate(Income model) {
         validateBusinessLogic(model);
+        validateAmbiguous(model);
     }
 
     @Override
@@ -68,6 +101,10 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     public Income deleteById(Long id) {
+        Income model = validateId(id);
+        if(Objects.nonNull(model)){
+            return delete(id);
+        }
         return null;
     }
 }

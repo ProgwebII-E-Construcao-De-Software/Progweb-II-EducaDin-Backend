@@ -35,6 +35,11 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
+    public Category getCategoryByName(String name) {
+        return repository.findByNameEqualsIgnoreCase(name);
+    }
+
+    @Override
     protected void validateBusinessToList(List<Category> categories) {
 
     }
