@@ -15,12 +15,11 @@ public class TestController {
 
     @GetMapping(path = "/")
     @Operation(description = "End point to test")
-    public String testModelReflection()
+    public boolean testModelReflection()
     {
         ModelTest md = new ModelTest(5L, "Michael Jackson", "", "Mike");
-        var response = ModelReflection.getInvalidMandatoryFields(md);
-
-        return response.toString();
+        ModelTest md2 = new ModelTest(6L, "Michael Jackson", "", "Mike");
+        return ModelReflection.isFieldsIdentical(md, md2, new String[]{"nome", "nick"});
 
     }
 

@@ -15,13 +15,21 @@ public interface IncomeMapper extends GenericMapper<IncomeDTO, IncomeDTOCreateUp
     @Mapping(source = "categoryName", target = "category.name")
     Income fromDTOtoModel(IncomeDTOCreateUpdate dto);
 
+    @Override
     @Mapping(source = "categoryName", target = "category.name")
     Income fromDTOCreateToModel(IncomeDTOCreateUpdate dto);
 
+    @Override
     @Mapping(source = "category.name", target = "categoryName")
     IncomeDTO fromModeltoDTO(Income model);
 
+    @Override
     @Named(value = "toDTOList")
     IncomeListDTO toDTOList(Income model);
+
+    @Override
+    @Mapping(source = "categoryName", target = "category.name")
+    Income fromDTOUpdateToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
+
 
 }
