@@ -39,10 +39,7 @@ public class Income implements GenericModel<Long> {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @MandatoryField(type = "Boolean", name = "repeat")
-    @Column(name = "repeat")
-    private Boolean repeat;
-
+    @MandatoryField(type = "Integer", name = "LeadTime")
     @Column(name = "leadtime")
     private Integer leadTime;
 
@@ -56,14 +53,14 @@ public class Income implements GenericModel<Long> {
                         Id: %d
                         Name: %s
                         Description: %s
-                        Price: %.2f
-                        Is repeatable: %s
+                        Amount: %.2f
+                        LeadTime: %d
                         Date: %s""",
                 id,
                 name,
                 description,
                 amount,
-                repeat,
+                leadTime,
                 incomeDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
