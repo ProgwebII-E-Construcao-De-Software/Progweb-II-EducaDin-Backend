@@ -10,6 +10,5 @@ public record IncomeListDTO(Long id,
                             String description,
                             Double amount,
                             Integer leadTime,
-                            Boolean repeat,
                             LocalDate incomeDate) {
 }

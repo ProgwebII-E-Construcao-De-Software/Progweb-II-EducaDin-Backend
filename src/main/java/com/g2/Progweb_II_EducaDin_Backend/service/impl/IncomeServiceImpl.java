@@ -41,6 +41,9 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     protected void validateBusinessLogicToCreate(Income newModel) {
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
+        if(newModel.getLeadTime() < 0){
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+        }
     }
 
     /**
@@ -55,8 +58,8 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     private void validateAmbiguous(Income newModel) {
         List<Income> similarModels = repository.findAllByName(newModel.getName());
         for(Income similarModel : similarModels){
-            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"repeat", "amount", "leadTime", "description"})){
-                throw new BusinessException(ErrorValidation.GENERAL);
+            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})){
+                throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION);
             }
         }
     }
