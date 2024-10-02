@@ -1,7 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
-import br.ueg.progweb2.arquitetura.model.MandatoryField;
-
+import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,7 @@ public class Income implements GenericModel<Long> {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
   
     private Category category;
@@ -36,17 +35,17 @@ public class Income implements GenericModel<Long> {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @MandatoryField(type = "Double", name = "Price")
-    @Column(name = "price", nullable = false)
-    private Double price;
+    @MandatoryField(type = "Double", name = "Amount")
+    @Column(name = "amount", nullable = false)
+    private Double amount;
 
-    @MandatoryField(type = "boolean", name = "fixed")
-    @Column(name = "fixed")
-    private boolean fixed;
+    @MandatoryField(type = "Integer", name = "LeadTime")
+    @Column(name = "leadtime")
+    private Integer leadTime;
 
-    @MandatoryField(type = "Date", name = "date")
-    @Column(name = "date")
-    private LocalDate date;
+    @MandatoryField(type = "LocalDate", name = "incomeDate")
+    @Column(name = "incomeDate")
+    private LocalDate incomeDate;
 
     @Override
     public String toString(){
@@ -54,15 +53,15 @@ public class Income implements GenericModel<Long> {
                         Id: %d
                         Name: %s
                         Description: %s
-                        Price: %.2f
-                        Is fixed: %s
+                        Amount: %.2f
+                        LeadTime: %d
                         Date: %s""",
                 id,
                 name,
                 description,
-                price,
-                fixed,
-                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                amount,
+                leadTime,
+                incomeDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
 }

@@ -30,8 +30,18 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     public List<CategoryDTO> getCategoriesByIExpense(boolean IExpense) {
         List<Category> categories = categoryRepository.findByIExpense(IExpense);
         return categories.stream()
-                .map(categoryMapper::toDTO)
+                .map(categoryMapper::fromModeltoDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Category getCategoryByName(String name) {
+        return repository.findByNameEqualsIgnoreCase(name);
+    }
+
+    @Override
+    protected void validateBusinessToList(List<Category> categories) {
+
     }
 
     @Override
@@ -40,21 +50,37 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessLogicForInsert(Category category) {
-        if (existsByName(category.getName())) {
-            throw new IllegalArgumentException("A categoria com este nome já existe");
-        }
+    protected void validateBusinessLogicToCreate(Category newModel) {
+
     }
 
     @Override
-    protected void validateBusinessLogicForUpdate(Category category) {
-        if (existsByName(category.getName())) {
-            throw new IllegalArgumentException("A categoria com este nome já existe");
-        }
+    protected void prepareToUpdate(Category newModel, Category model) {
+
     }
 
     @Override
-    protected void validateBusinessLogic(Category category) {
+    protected void validateBusinessLogicToUpdate(Category model) {
 
+    }
+
+    @Override
+    protected void validateBusinessLogicToDelete(Category model) {
+
+    }
+
+    @Override
+    protected void validateBusinessLogic(Category data) {
+
+    }
+
+    @Override
+    public List<Category> listAll() {
+        return List.of();
+    }
+
+    @Override
+    public Category deleteById(Long id) {
+        return null;
     }
 }
