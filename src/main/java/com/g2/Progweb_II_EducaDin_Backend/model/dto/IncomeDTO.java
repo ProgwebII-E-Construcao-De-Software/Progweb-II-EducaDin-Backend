@@ -1,10 +1,12 @@
 package com.g2.Progweb_II_EducaDin_Backend.model.dto;
 
-import com.g2.Progweb_II_EducaDin_Backend.model.Category;
+import java.time.LocalDate;
 
 public record IncomeDTO(Long id,
-                        Category category,
+                        String categoryName,
                         String name,
                         String description,
-                        Double price) {
+                        Double amount,
+                        Integer leadTime,
+                        LocalDate incomeDate) {
 }
