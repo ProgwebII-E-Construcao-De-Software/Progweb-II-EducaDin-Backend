@@ -49,7 +49,15 @@ public class Expense implements GenericModel<Long> {
     @Column(name = "date")
     private LocalDate date;
 
+    @Override
+    public Long getId() {
+        return id;
+    }
 
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString(){
