@@ -47,7 +47,7 @@ public class Expense implements GenericModel<Long> {
 
     @MandatoryField(type = "Date", name = "date")
     @Column(name = "date")
-    private LocalDate date;
+    private LocalDate expenseDate;
 
     @Override
     public Long getId() {
@@ -66,13 +66,13 @@ public class Expense implements GenericModel<Long> {
                         Name: %s
                         Description: %s
                         Amount: %.2f
-                        Is fixed: %s
+                        LeadTime: %d
                         Date: %s""",
                 id,
                 name,
                 description,
                 amount,
-                fixed,
-                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                leadTime,
+                expenseDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 }
