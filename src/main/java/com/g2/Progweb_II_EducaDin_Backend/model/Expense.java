@@ -37,6 +37,10 @@ public class Expense implements GenericModel<Long> {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    @MandatoryField(type = "Integer", name = "LeadTime")
+    @Column(name = "leadtime")
+    private Integer leadTime;
+
     @MandatoryField(type = "boolean", name = "fixed")
     @Column(name = "fixed")
     private boolean fixed;
@@ -45,15 +49,7 @@ public class Expense implements GenericModel<Long> {
     @Column(name = "date")
     private LocalDate date;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public String toString(){
