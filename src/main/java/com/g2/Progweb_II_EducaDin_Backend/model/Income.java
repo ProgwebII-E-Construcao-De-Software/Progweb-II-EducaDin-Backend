@@ -50,6 +50,7 @@ public class Income implements GenericModel<Long> {
     @Column(name = "incomeDate")
     private LocalDate incomeDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "repeatable")
     private Repeatable repeatable;
 
