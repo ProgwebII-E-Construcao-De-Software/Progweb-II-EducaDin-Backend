@@ -2,8 +2,10 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "income")
 public class Income implements GenericModel<Long> {
 
@@ -22,7 +25,7 @@ public class Income implements GenericModel<Long> {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "category_id")
   
     private Category category;
@@ -47,6 +50,10 @@ public class Income implements GenericModel<Long> {
     @Column(name = "incomeDate")
     private LocalDate incomeDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeatable")
+    private Repeatable repeatable;
+
     @Override
     public String toString(){
         return String.format("""
@@ -55,12 +62,16 @@ public class Income implements GenericModel<Long> {
                         Description: %s
                         Amount: %.2f
                         LeadTime: %d
+                        Repeatable
+                        Category: %s
                         Date: %s""",
                 id,
                 name,
                 description,
                 amount,
                 leadTime,
+                repeatable,
+                category.toString(),
                 incomeDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
