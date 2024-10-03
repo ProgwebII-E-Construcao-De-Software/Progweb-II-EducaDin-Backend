@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "${api.version}/incomes")
+@RequestMapping(path = "${api.version}/expenses")
 @CrossOrigin()
 public class ExpenseController extends GenericCRUDController<
         ExpenseDTO,
