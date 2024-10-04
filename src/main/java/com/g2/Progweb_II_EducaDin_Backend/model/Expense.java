@@ -2,8 +2,10 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
+import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -41,9 +44,9 @@ public class Expense implements GenericModel<Long> {
     @Column(name = "leadtime")
     private Integer leadTime;
 
-    @MandatoryField(type = "boolean", name = "fixed")
-    @Column(name = "fixed")
-    private boolean fixed;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeatable")
+    private Repeatable repeatable;
 
     @MandatoryField(type = "Date", name = "date")
     @Column(name = "date")
