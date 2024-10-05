@@ -11,6 +11,5 @@ public record ExpenseListDTO(Long id,
                              String description,
                              Double amount,
                              Integer leadTime,
-                             LocalDate expenseDate) { }
                              Repeatable repeatable,
-                             LocalDate incomeDate) { }
+                             LocalDate expenseDate) { }
