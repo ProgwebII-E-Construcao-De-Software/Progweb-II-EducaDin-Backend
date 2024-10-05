@@ -6,5 +6,5 @@ public record ExpenseDTOCreateUpdate(String categoryName,
                                      String name,
                                      String description,
                                      Double amount,
-                                     LocalDate incomeDate,
+                                     LocalDate expenseDate,
                                      Integer leadTime) { }

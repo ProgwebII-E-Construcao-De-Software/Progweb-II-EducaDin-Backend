@@ -10,4 +10,4 @@ public record ExpenseListDTO(Long id,
                              String description,
                              Double amount,
                              Integer leadTime,
-                             LocalDate incomeDate) { }
+                             LocalDate expenseDate) { }
