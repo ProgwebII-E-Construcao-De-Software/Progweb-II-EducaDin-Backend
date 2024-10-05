@@ -72,7 +72,38 @@ public class AppStartupRunner extends AbstractAppStartupRunner {
 			LocalDate.now().plusWeeks(2),
 			0);
 
-}
+		persistExpense("Aluguel",
+				category2,
+				1200.0,
+				"Pagamento mensal de aluguel",
+				LocalDate.now(),
+				1);
+		persistExpense("Internet",
+				category2,
+				150.0,
+				"Fatura de internet",
+				LocalDate.now().plusDays(5),
+				2);
+		persistExpense("Supermercado",
+				category2,
+				350.0,
+				"Compras mensais de supermercado",
+				LocalDate.now().plusDays(3),
+				3);
+		persistExpense("Combustível",
+				category2,
+				250.0,
+				"Abastecimento do carro",
+				LocalDate.now().minusDays(1),
+				4);
+		persistExpense("Academia",
+				category2,
+				100.0,
+				"Mensalidade da academia",
+				LocalDate.now().plusWeeks(1),
+				1);
+
+	}
 
 private void persistIncome(String name, Category category, double amount, String description, LocalDate incomeDate, int leadTime) {
 	Income income = Income.builder()
@@ -86,4 +117,18 @@ private void persistIncome(String name, Category category, double amount, String
 	LOG.info("New income: {}", this.incomeRepository.save(income).toString());
 
 }
+
+private void persistExpense(String name, Category category, double amount, String description, LocalDate incomeDate, int leadTime) {
+		Expense expense = Expense.builder()
+				.name(name)
+				.category(category)
+				.amount(amount)
+				.description(description)
+				.expenseDate(incomeDate)
+				.leadTime(leadTime)
+				.build();
+		LOG.info("New Expense: {}", this.expenseRepository.save(expense).toString());
+
+	}
+
 }

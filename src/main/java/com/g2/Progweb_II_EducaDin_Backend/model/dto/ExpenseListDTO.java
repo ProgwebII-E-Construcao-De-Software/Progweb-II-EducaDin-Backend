@@ -1,5 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.model.dto;
 
+import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 
 import java.time.LocalDate;
@@ -11,3 +12,5 @@ public record ExpenseListDTO(Long id,
                              Double amount,
                              Integer leadTime,
                              LocalDate expenseDate) { }
+                             Repeatable repeatable,
+                             LocalDate incomeDate) { }
