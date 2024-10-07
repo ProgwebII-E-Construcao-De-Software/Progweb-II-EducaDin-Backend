@@ -42,7 +42,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException("LeadTime must be higher than -1: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
     }
 
@@ -57,9 +57,12 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
      */
     private void validateAmbiguous(Income newModel) {
         List<Income> similarModels = repository.findAllByName(newModel.getName());
+
         for(Income similarModel : similarModels){
-            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})){
-                throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+
+            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
+                && !Objects.equals(similarModel.getId(), newModel.getId())){
+                throw new BusinessException("Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel,ErrorValidation.BUSINESS_LOGIC_VIOLATION);
             }
         }
     }
@@ -89,11 +92,11 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     protected void validateBusinessLogic(Income model) {
         if(Objects.isNull(model)){
-            throw new BusinessException(ErrorValidation.GENERAL);
+            throw new BusinessException("Model is null: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new BusinessException(ErrorValidation.GENERAL);
+            throw new BusinessException("Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
     }
 
