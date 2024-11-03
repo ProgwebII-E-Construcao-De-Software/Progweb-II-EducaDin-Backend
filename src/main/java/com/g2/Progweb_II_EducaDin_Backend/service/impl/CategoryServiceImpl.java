@@ -40,11 +40,6 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessToList(List<Category> categories) {
-
-    }
-
-    @Override
     protected void prepareToCreate(Category category) {
 
     }
@@ -54,6 +49,10 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     }
 
+    @Override
+    protected void validateBusinessToList(Category data) {
+
+    }
     @Override
     protected void prepareToUpdate(Category newModel, Category model) {
 
@@ -77,6 +76,11 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     @Override
     public List<Category> listAll() {
         return List.of();
+    }
+
+    @Override
+    protected void validateBusinessToList(List<Category> dataList) {
+
     }
 
     @Override

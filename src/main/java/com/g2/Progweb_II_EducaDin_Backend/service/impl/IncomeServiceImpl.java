@@ -1,10 +1,9 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
-import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
-import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import com.g2.Progweb_II_EducaDin_Backend.model.Category;
+import br.ueg.progweb2.arquitetura.util.ModelReflection;
+import br.ueg.progweb2.exampleuse.exceptions.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
@@ -14,16 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRepository> implements IncomeService {
    @Autowired
    CategoryService categoryService;
 
-    @Override
-    protected void validateBusinessToList(List<Income> incomes) {
-
-    }
 
     @Override
     protected void prepareToCreate(Income newModel) {
@@ -42,7 +38,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new BusinessException("LeadTime must be higher than -1: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"LeadTime must be higher than -1: ");
         }
     }
 
@@ -62,7 +58,8 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
             if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
                 && !Objects.equals(similarModel.getId(), newModel.getId())){
-                throw new BusinessException("Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel,ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+                throw new BusinessException(
+                        ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
             }
         }
     }
@@ -92,11 +89,11 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     protected void validateBusinessLogic(Income model) {
         if(Objects.isNull(model)){
-            throw new BusinessException("Model is null: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new BusinessException("Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
     }
 
@@ -106,12 +103,28 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     }
 
     @Override
+    protected void validateBusinessToList(List<Income> dataList) {
+
+    }
+
+    @Override
     public Income deleteById(Long id) {
         Income model = validateId(id);
         if(Objects.nonNull(model)){
-            return delete(id);
+            repository.deleteById(id);
+            return model;
         }
         return null;
+    }
+
+    private Income validateId(Long id) {
+        Optional<Income> incomeOptional = repository.findById(id);
+        return incomeOptional.orElse(null);
+    }
+
+    @Override
+    protected void validateBusinessToList(Income data) {
+
     }
 
 }

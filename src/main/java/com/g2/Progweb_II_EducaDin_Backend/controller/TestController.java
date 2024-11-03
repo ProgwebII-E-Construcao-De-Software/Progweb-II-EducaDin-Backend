@@ -1,6 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.controller;
 
-import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
+import br.ueg.progweb2.arquitetura.util.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.ModelTest;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.CrossOrigin;
