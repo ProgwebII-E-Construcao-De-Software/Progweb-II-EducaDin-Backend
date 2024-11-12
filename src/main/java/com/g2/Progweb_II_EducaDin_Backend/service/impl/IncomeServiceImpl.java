@@ -48,7 +48,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void validateBusinessToList(Income data) {
-
+      //TODO: validar lista
     }
 
     /**
