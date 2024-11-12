@@ -1,9 +1,9 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
+import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import br.ueg.progweb2.arquitetura.util.ModelReflection;
-import br.ueg.progweb2.exampleuse.exceptions.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.repository.ExpenseRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
@@ -45,11 +45,6 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         }
     }
 
-    @Override
-    protected void validateBusinessToList(Expense data) {
-
-    }
-
     /**
      *
      * @param newModel
@@ -64,7 +59,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         for(Expense similarModel : similarModels){
             if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
                     && !Objects.equals(similarModel.getId(), newModel.getId())){
-                throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
+                throw new BusinessException("Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel, ErrorValidation.BUSINESS_LOGIC_VIOLATION);
             }
         }
     }
@@ -95,17 +90,22 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
     @Override
     protected void validateBusinessLogic(Expense model) {
         if(Objects.isNull(model)){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Model is null: ");
+            throw new BusinessException("Model is null: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new BusinessException("Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
     }
 
     @Override
     public List<Expense> listAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Expense deleteById(Long id) {
+        return null;
     }
 
 }

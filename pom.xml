@@ -59,7 +59,7 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.5.5.Final</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>br.g2.progweb2</groupId>
 			<artifactId>arquitetura-prog-web-2</artifactId>

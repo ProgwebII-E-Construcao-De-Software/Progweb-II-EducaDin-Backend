@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend;
 
 import br.ueg.progweb2.arquitetura.service.AbstractAppStartupRunner;
 import ch.qos.logback.classic.Logger;
+import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
@@ -42,35 +43,41 @@ public class AppStartupRunner extends AbstractAppStartupRunner {
 			500.0,
 			"Esta é descrição",
 			LocalDate.now(),
-			2);
+			2,
+			Repeatable.MONTHLY);
 	persistIncome("Freelance pro IFOOD",
 			category1,
 			500.0,
 			"Esta é a descrição tal",
 			LocalDate.now(),
-			1);
+			1,
+			Repeatable.YEARLY);
 	persistIncome("Consultoria em TI",
 			category2,
 			1200.0,
 			"Serviço de consultoria mensal", LocalDate.now(),
-			5);
+			5,
+			Repeatable.WEEKLY);
 	persistIncome("Maria",
 			category1,
 			2500.0,
 			"Esta é descrição",
 			LocalDate.now(),
-			6);
+			6,
+			Repeatable.WEEKLY);
 	persistIncome("Luciana",
 			category1,
 			500.0,
 			"Esta é a descrição tal",
 			LocalDate.now(),
-			4);
+			4,
+			Repeatable.DONT_REPEATS);
 	persistIncome("Consultoria em TI",
 			category2, 1200.0,
 			"Serviço de consultoria mensal",
 			LocalDate.now().plusWeeks(2),
-			0);
+			0,
+			Repeatable.DONT_REPEATS);
 
 		persistExpense("Aluguel",
 				category2,
@@ -105,7 +112,14 @@ public class AppStartupRunner extends AbstractAppStartupRunner {
 
 	}
 
-private void persistIncome(String name, Category category, double amount, String description, LocalDate incomeDate, int leadTime) {
+private void persistIncome(
+		String name,
+		Category category,
+		double amount,
+		String description,
+		LocalDate incomeDate,
+		int leadTime,
+		Repeatable repeatable) {
 	Income income = Income.builder()
 			.name(name)
 			.category(category)
@@ -113,6 +127,7 @@ private void persistIncome(String name, Category category, double amount, String
 			.description(description)
 			.incomeDate(incomeDate)
 			.leadTime(leadTime)
+			.repeatable(repeatable)
 			.build();
 	LOG.info("New income: {}", this.incomeRepository.save(income).toString());
 

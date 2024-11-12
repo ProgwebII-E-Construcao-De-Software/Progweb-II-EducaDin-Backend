@@ -50,10 +50,6 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessToList(Category data) {
-
-    }
-    @Override
     protected void prepareToUpdate(Category newModel, Category model) {
 
     }
