@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import br.ueg.progweb2.arquitetura.util.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;

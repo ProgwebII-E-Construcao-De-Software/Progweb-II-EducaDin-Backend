@@ -3,7 +3,7 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import br.ueg.progweb2.arquitetura.util.ModelReflection;
-import br.ueg.progweb2.exampleuse.exceptions.ErrorValidation;
+import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.repository.ExpenseRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
