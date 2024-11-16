@@ -1,9 +1,11 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
-import br.ueg.progweb2.arquitetura.model.MandatoryField;
+import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "income")
 public class Income implements GenericModel<Long> {
 
@@ -24,6 +27,7 @@ public class Income implements GenericModel<Long> {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+  
     private Category category;
 
     @MandatoryField(type = "String", name = "Name")
@@ -34,17 +38,21 @@ public class Income implements GenericModel<Long> {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @MandatoryField(type = "Double", name = "Price")
-    @Column(name = "price", nullable = false)
-    private Double price;
+    @MandatoryField(type = "Double", name = "Amount")
+    @Column(name = "amount", nullable = false)
+    private Double amount;
 
-    @MandatoryField(type = "boolean", name = "fixed")
-    @Column(name = "fixed")
-    private boolean fixed;
+    @MandatoryField(type = "Integer", name = "LeadTime")
+    @Column(name = "leadtime")
+    private Integer leadTime;
 
-    @MandatoryField(type = "Date", name = "date")
-    @Column(name = "date")
-    private LocalDate date;
+    @MandatoryField(type = "LocalDate", name = "incomeDate")
+    @Column(name = "incomeDate")
+    private LocalDate incomeDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "repeatable")
+    private Repeatable repeatable;
 
     @Override
     public String toString(){
@@ -52,15 +60,19 @@ public class Income implements GenericModel<Long> {
                         Id: %d
                         Name: %s
                         Description: %s
-                        Price: %.2f
-                        Is fixed: %s
+                        Amount: %.2f
+                        LeadTime: %d
+                        Repeatable
+                        Category: %s
                         Date: %s""",
                 id,
                 name,
                 description,
-                price,
-                fixed,
-                date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                amount,
+                leadTime,
+                repeatable,
+                category.toString(),
+                incomeDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
 }

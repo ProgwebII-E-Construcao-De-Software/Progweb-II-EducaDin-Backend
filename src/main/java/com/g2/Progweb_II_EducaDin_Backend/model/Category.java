@@ -1,5 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
+
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "category")
 public class Category implements GenericModel<Long> {

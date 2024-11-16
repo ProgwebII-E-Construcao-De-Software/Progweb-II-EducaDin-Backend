@@ -1,11 +1,11 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import com.g2.Progweb_II_EducaDin_Backend.mapper.CategoryMapper;
-import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.CategoryDTO;
+import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.repository.CategoryRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
+import com.g2.Progweb_II_EducaDin_Backend.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,12 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessToList(List<Category> modelList) {
+    public Category getCategoryByName(String name) {
+        return repository.findByNameEqualsIgnoreCase(name);
+    }
+
+    @Override
+    protected void validateBusinessToList(List<Category> categories) {
 
     }
 
@@ -45,10 +50,8 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessLogicToCreate(Category category) {
-        if (existsByName(category.getName())) {
-            throw new IllegalArgumentException("A categoria com este nome já existe");
-        }
+    protected void validateBusinessLogicToCreate(Category newModel) {
+
     }
 
     @Override
@@ -57,14 +60,12 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessLogicToUpdate(Category category) {
-        if (existsByName(category.getName())) {
-            throw new IllegalArgumentException("A categoria com este nome já existe");
-        }
+    protected void validateBusinessLogicToUpdate(Category model) {
+
     }
 
     @Override
-    protected void validateBusinessLogicToDelete(Category category) {
+    protected void validateBusinessLogicToDelete(Category model) {
 
     }
 
@@ -75,31 +76,11 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Override
     public List<Category> listAll() {
-        return getAll();
-    }
-
-    @Override
-    public Category create(Category model) {
-        return super.create(model);
-    }
-
-    @Override
-    public Category update(Category model) {
-        return super.update(model);
-    }
-
-    @Override
-    public Category delete(Long id) {
-        return super.delete(id);
-    }
-
-    @Override
-    public Category getById(Long id) {
-        return super.getById(id);
+        return List.of();
     }
 
     @Override
     public Category deleteById(Long id) {
-        return super.delete(id);
+        return null;
     }
 }
