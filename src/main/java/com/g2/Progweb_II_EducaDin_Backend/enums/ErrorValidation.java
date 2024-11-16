@@ -26,4 +26,9 @@ public enum ErrorValidation implements MessageCode {
     public Integer getStatus() {
         return this.code;
     }
+
+    @Override
+    public String getCode() {
+        return this.message;
+    }
 }
