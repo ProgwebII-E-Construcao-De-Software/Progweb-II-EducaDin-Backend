@@ -1,0 +1,18 @@
+[
+  {
+    "type": "custo",
+    "message": "Reduza gastos fixos para aumentar sua poupança mensal."
+  },
+  {
+    "type": "gasto",
+    "message": "Evite comprar por impulso, planeje suas despesas."
+  },
+  {
+    "type": "metas",
+    "message": "Defina metas financeiras claras para facilitar o controle."
+  },
+  {
+    "type": "custo",
+    "message": "Negocie preços sempre que possível para economizar."
+  }
+]

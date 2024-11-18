@@ -75,4 +75,9 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
         }
         return null;
     }
+
+    @Override
+    public boolean isNotificationTypeEnabled(Long userId, String type) {
+        return repository.existsByUserIdAndType(userId, type);
+    }
 }
