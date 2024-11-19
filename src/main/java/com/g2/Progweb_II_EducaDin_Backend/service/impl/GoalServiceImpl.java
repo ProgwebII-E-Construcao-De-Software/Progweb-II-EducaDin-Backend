@@ -1,10 +1,11 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
-import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
+import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
+import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
@@ -39,6 +40,11 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         validateAmbiguous(newModel);
     }
 
+    @Override
+    protected void validateBusinessToList(Goal data) {
+
+    }
+
     /**
      * @param newModel Method validates if a given instance its too
      *                 similar on crucial attributes that make
@@ -48,7 +54,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     private void validateAmbiguous(Goal newModel) {
         Optional<Goal> similarModel = Optional.ofNullable(repository.findByNameEqualsIgnoreCase(newModel.getName()));
         if (similarModel.isPresent() && !Objects.equals(newModel.getId(), similarModel.get().getId())) {
-            throw new BusinessException("Entitys are too similar : \nmodelPosted : " + newModel + " \nsimilarModel: " + similarModel, ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Entitys are too similar : \nmodelPosted : " + newModel + " \nsimilarModel: " + similarModel);
         }
     }
 
@@ -61,7 +67,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     protected void validateBusinessLogicToUpdate(Goal model) {
         validateBusinessLogic(model);
         if (model.getAmountReached() <= 1.0 || model.getAmountReached() > model.getAmountTotal()) {
-            throw new BusinessException("Amount is invalid!: Must be higher than 1.0 and lower than total amount", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 1.0 and lower than total amount");
         }
         validateAmbiguous(model);
     }
@@ -77,7 +83,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
             throw new BusinessException("Model is null: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
         if (model.getAmountTotal() <= 1.0 || model.getAmountTotal() >= 2147483647) {
-            throw new BusinessException("Amount Total is invalid!: Must be higher than 1.0 and lower than 2140000000 ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount Total is invalid!: Must be higher than 1.0 and lower than 2140000000 ");
         }
 
     }
@@ -91,9 +97,17 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     public Goal deleteById(Long id) {
         Goal model = validateId(id);
         if (Objects.nonNull(model)) {
-            return delete(id);
+            repository.deleteById(id);
+            return model;
         }
         return null;
     }
+
+    protected Goal validateId(Long id) {
+        Optional<Goal> goalOptional = repository.findById(id);
+        return goalOptional.orElse(null);
+    }
+
+
 
 }
