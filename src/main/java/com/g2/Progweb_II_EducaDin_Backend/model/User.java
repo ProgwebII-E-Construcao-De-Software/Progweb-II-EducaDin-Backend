@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Table(name = "users")
-public class Users {
+public class User {
 
 
     @Id
@@ -27,5 +27,8 @@ public class Users {
 
     @Column(unique=true, nullable = false)
     private String password;
+
+    @Column
+    private String role;
 
 }
