@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public record GoalListDTO(Long id,
                           String name,
+                          Boolean completed,
                           Double amountReached,
                           Double amountTotal,
                           LocalDate goalDate,

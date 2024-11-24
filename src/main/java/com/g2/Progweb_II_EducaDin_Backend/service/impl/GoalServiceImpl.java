@@ -96,4 +96,8 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         return null;
     }
 
+    @Override
+    public Goal share(Goal inputModel, Long idUser, Long idShare) {
+        return null;
+    }
 }
