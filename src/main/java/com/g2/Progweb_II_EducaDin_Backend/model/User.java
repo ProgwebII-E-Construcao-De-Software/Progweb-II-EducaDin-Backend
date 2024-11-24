@@ -28,13 +28,16 @@ public class User implements UserDetails, Serializable {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String username;
+    private String name;
 
     @Column(unique=true, nullable = false)
     private String email;
 
     @Column(unique=true, nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private boolean enabled;
 
     @Column
     private UserRole role;
@@ -46,6 +49,11 @@ public class User implements UserDetails, Serializable {
         } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
