@@ -1,5 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.controller;
 
+import com.g2.Progweb_II_EducaDin_Backend.auth.security.TokenService;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.AuthenticationDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.RegisterDTO;
@@ -21,10 +22,14 @@ public class AuthenticationController {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((User) auth.getPrincipal());
         return ResponseEntity.ok().body(auth);
     }
 
