@@ -1,9 +1,9 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import br.ueg.progweb2.arquitetura.util.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
@@ -46,11 +46,6 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         }
     }
 
-    @Override
-    protected void validateBusinessToList(Income data) {
-      //TODO: validar lista
-    }
-
     /**
      *
      * @param newModel
@@ -90,10 +85,6 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         validateAmbiguous(model);
     }
 
-    @Override
-    protected void validateBusinessLogicToDelete(Income model) {
-
-    }
 
     @Override
     protected void validateBusinessLogic(Income model) {
@@ -110,11 +101,6 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     public List<Income> listAll() {
         return repository.findAll();
-    }
-
-    @Override
-    protected void validateBusinessToList(List<Income> dataList) {
-
     }
 
     @Override

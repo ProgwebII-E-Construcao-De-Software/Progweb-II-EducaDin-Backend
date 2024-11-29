@@ -16,9 +16,6 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
  */
 @Configuration
 public class WebConfig extends ApiWebConfig {
-    //Para exibir logs do que está senfo requisitado pelo frontend
-    //precisa colocar o atributo abaixo no application.properties:
-    //logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG
     @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();

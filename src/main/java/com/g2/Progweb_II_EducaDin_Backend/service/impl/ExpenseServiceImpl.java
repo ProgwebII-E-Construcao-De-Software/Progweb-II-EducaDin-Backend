@@ -1,8 +1,8 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import br.ueg.progweb2.arquitetura.util.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.repository.ExpenseRepository;
@@ -18,11 +18,6 @@ import java.util.Objects;
 public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, ExpenseRepository> implements ExpenseService {
     @Autowired
     CategoryService categoryService;
-
-    @Override
-    protected void validateBusinessToList(List<Expense> dataList) {
-
-    }
 
     @Override
     protected void prepareToCreate(Expense newModel) {
@@ -43,11 +38,6 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         if(newModel.getLeadTime() < 0){
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION);
         }
-    }
-
-    @Override
-    protected void validateBusinessToList(Expense data) {
-
     }
 
     /**
@@ -87,10 +77,6 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         validateAmbiguous(model);
     }
 
-    @Override
-    protected void validateBusinessLogicToDelete(Expense model) {
-
-    }
 
     @Override
     protected void validateBusinessLogic(Expense model) {

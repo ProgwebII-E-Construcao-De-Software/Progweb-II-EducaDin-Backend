@@ -15,19 +15,18 @@ public interface ExpenseMapper extends GenericMapper<ExpenseDTO, ExpenseDTOCreat
 
     @Override
     @Mapping(source = "categoryName", target = "category.name")
-    Expense fromDTOCreateToModel(ExpenseDTOCreateUpdate dto);
+    Expense fromModelCreatedToModel(ExpenseDTOCreateUpdate dto);
 
     @Override
     @Mapping(source = "category.name", target = "categoryName")
-    ExpenseDTO fromModeltoDTO(Expense model);
+    ExpenseDTO toDTO(Expense model);
 
     @Override
     @Named(value = "toDTOList")
     ExpenseListDTO toDTOList(Expense model);
 
-    @Override
     @Mapping(source = "categoryName", target = "category.name")
-    Expense fromDTOUpdateToModel(ExpenseDTOCreateUpdate dtoUpdate);
+    Expense toModel(ExpenseDTOCreateUpdate dtoUpdate);
 
 
 }

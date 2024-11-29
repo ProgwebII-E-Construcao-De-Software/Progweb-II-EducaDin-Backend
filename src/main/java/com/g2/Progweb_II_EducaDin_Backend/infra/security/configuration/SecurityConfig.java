@@ -24,6 +24,6 @@ public class SecurityConfig extends ApiSecurityConfig {
 
     @Override
     protected List<String> getCustomFreeAccessPaterns() {
-        return Arrays.asList(apiBase.concat("/domain-model/list-actives"));
+        return Arrays.asList(apiBase.concat("/incomes/list-actives"));
     }
 }

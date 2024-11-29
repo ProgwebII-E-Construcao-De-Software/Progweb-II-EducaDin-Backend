@@ -24,11 +24,6 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
 
 
     @Override
-    protected void validateBusinessToList(List<Goal> goals) {
-
-    }
-
-    @Override
     protected void prepareToCreate(Goal newModel) {
         newModel.setName(Strings.toRootUpperCase(newModel.getName()));
         newModel.setAmountReached(0.0);
@@ -40,10 +35,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         validateAmbiguous(newModel);
     }
 
-    @Override
-    protected void validateBusinessToList(Goal data) {
 
-    }
 
     /**
      * @param newModel Method validates if a given instance its too
@@ -72,15 +64,11 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         validateAmbiguous(model);
     }
 
-    @Override
-    protected void validateBusinessLogicToDelete(Goal model) {
-
-    }
 
     @Override
     protected void validateBusinessLogic(Goal model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException("Model is null: ", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Model is null: ");
         }
         if (model.getAmountTotal() <= 1.0 || model.getAmountTotal() >= 2147483647) {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount Total is invalid!: Must be higher than 1.0 and lower than 2140000000 ");

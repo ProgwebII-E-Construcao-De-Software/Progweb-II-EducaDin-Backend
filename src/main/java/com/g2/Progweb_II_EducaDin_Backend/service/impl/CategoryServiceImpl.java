@@ -30,7 +30,7 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     public List<CategoryDTO> getCategoriesByIExpense(boolean IExpense) {
         List<Category> categories = categoryRepository.findByIExpense(IExpense);
         return categories.stream()
-                .map(categoryMapper::fromModeltoDTO)
+                .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -49,10 +49,6 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     }
 
-    @Override
-    protected void validateBusinessToList(Category data) {
-
-    }
 
     @Override
     protected void prepareToUpdate(Category newModel, Category model) {
@@ -65,11 +61,6 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
-    protected void validateBusinessLogicToDelete(Category model) {
-
-    }
-
-    @Override
     protected void validateBusinessLogic(Category data) {
 
     }
@@ -77,11 +68,6 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     @Override
     public List<Category> listAll() {
         return List.of();
-    }
-
-    @Override
-    protected void validateBusinessToList(List<Category> dataList) {
-
     }
 
     @Override

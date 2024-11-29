@@ -13,15 +13,15 @@ import org.mapstruct.Named;
 public interface IncomeMapper extends GenericMapper<IncomeDTO, IncomeDTOCreateUpdate, IncomeDTOCreateUpdate, IncomeListDTO, Income, Long> {
 
     @Mapping(source = "categoryName", target = "category.name")
-    Income fromDTOtoModel(IncomeDTOCreateUpdate dto);
+    Income toModel(IncomeDTOCreateUpdate dto);
 
     @Override
     @Mapping(source = "categoryName", target = "category.name")
-    Income fromDTOCreateToModel(IncomeDTOCreateUpdate dto);
+    Income fromModelCreatedToModel(IncomeDTOCreateUpdate dto);
 
     @Override
     @Mapping(source = "category.name", target = "categoryName")
-    IncomeDTO fromModeltoDTO(Income model);
+    IncomeDTO toDTO(Income model);
 
     @Override
     @Named(value = "toDTOList")
@@ -29,7 +29,7 @@ public interface IncomeMapper extends GenericMapper<IncomeDTO, IncomeDTOCreateUp
 
     @Override
     @Mapping(source = "categoryName", target = "category.name")
-    Income fromDTOUpdateToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
+    Income fromModelUpdatedToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
 
 
 }

@@ -28,12 +28,12 @@ public class UserProviderService implements IUserProviderService {
                 .name("Admin")
                 .email("admin@admin.com.br")
                 .roles(Arrays.asList(
-                        "ROLE_DOMAINMODEL_REMOVEALL",
-                        "ROLE_DOMAINMODEL_CREATE",
-                        "ROLE_DOMAINMODEL_READ",
-                        "ROLE_DOMAINMODEL_UPDATE",
-                        "ROLE_DOMAINMODEL_DELETE",
-                        "ROLE_DOMAINMODEL_READ_ALL"
+                        "ROLE_INCOME_REMOVEALL",
+                        "ROLE_INCOME_CREATE",
+                        "ROLE_INCOME_READ",
+                        "ROLE_INCOME_UPDATE",
+                        "ROLE_INCOME_DELETE",
+                        "ROLE_INCOME_READ_ALL"
                 ))
                 .activeState(true)
                 .password(encodedPassword)

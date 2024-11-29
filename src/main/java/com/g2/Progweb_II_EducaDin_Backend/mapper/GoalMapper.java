@@ -11,13 +11,13 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = CategoryMapper.class)
 public interface GoalMapper extends GenericMapper<GoalDTO, GoalDTOCreate, GoalDTOUpdate, GoalListDTO, Goal, Long> {
 
-    Goal fromDTOtoModel(GoalDTOUpdate dto);
+    Goal toModel(GoalDTOUpdate dto);
 
     @Override
-    Goal fromDTOCreateToModel(GoalDTOCreate dto);
+    Goal fromModelCreatedToModel(GoalDTOCreate dto);
 
     @Override
-    GoalDTO fromModeltoDTO(Goal model);
+    GoalDTO toDTO(Goal model);
 
     @Override
     @Named(value = "toDTOList")
@@ -25,5 +25,5 @@ public interface GoalMapper extends GenericMapper<GoalDTO, GoalDTOCreate, GoalDT
     GoalListDTO toDTOList(Goal model);
 
     @Override
-    Goal fromDTOUpdateToModel(GoalDTOUpdate goalDTOUpdate);
+    Goal fromModelUpdatedToModel(GoalDTOUpdate goalDTOUpdate);
 }
