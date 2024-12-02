@@ -25,15 +25,11 @@ public class Notification implements GenericModel<Long> {
 
     @MandatoryField(name = "Type", type = "String")
     @Column(name = "type", nullable = false)
-    private String type; // Ex.: "TIP", "META_FIM", "LEMBRETE"
+    private String type;
 
     @MandatoryField(name = "Message", type = "String")
     @Column(name = "message", nullable = false, length = 1000)
     private String message;
-
-    @MandatoryField(name = "Read", type = "boolean")
-    @Column(name = "is_read", nullable = false)
-    private boolean read = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,5 +48,20 @@ public class Notification implements GenericModel<Long> {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("""
+            Id: %d,
+            UserId: %d,
+            Type: %s,
+            Message: %s,
+            CreatedAt: %s""",
+        id,
+        userId,
+        type,
+        message,
+        createdAt);
     }
 }

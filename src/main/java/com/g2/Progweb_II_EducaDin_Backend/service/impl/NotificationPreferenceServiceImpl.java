@@ -33,16 +33,21 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     }
 
     @Override
-    protected void prepareToUpdate(NotificationPreference newModel, NotificationPreference existingModel) {
-        newModel.setId(existingModel.getId());
-        if (Objects.isNull(newModel.getType()) || newModel.getType().isEmpty()) {
-            throw new BusinessException("Notification type cannot be null or empty.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+    protected void prepareToUpdate(NotificationPreference newModel, NotificationPreference model) {
+        if (newModel.getEnabled() != model.isEnabled()) {
+            model.setEnabled(newModel.isEnabled());
         }
     }
 
+
     @Override
     protected void validateBusinessLogicToUpdate(NotificationPreference model) {
-        validateBusinessLogic(model);
+        if (Objects.isNull(model)) {
+            throw new BusinessException("Model is null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+        }
+        if (Objects.isNull(model.getEnabled())) {
+            throw new BusinessException("Enabled field cannot be null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+        }
     }
 
     @Override
@@ -70,14 +75,15 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     @Override
     public NotificationPreference deleteById(Long id) {
         NotificationPreference model = validateId(id);
-        if (Objects.nonNull(model)) {
-            return delete(id);
+        if (Objects.isNull(model)) {
+            throw new BusinessException("Notification preference not found.", ErrorValidation.NOT_FOUND);
         }
-        return null;
+        return delete(id);
     }
 
     @Override
     public boolean isNotificationTypeEnabled(Long userId, String type) {
         return repository.existsByUserIdAndType(userId, type);
     }
+
 }
