@@ -22,7 +22,7 @@ public class UserProviderService implements IUserProviderService {
 
     @Override
     public CredencialDTO getCredentialByLogin(String username) {
-        return userMapper.toCredentialDTO(this.userService.getUserByUserName(username));
+        return userMapper.toCredentialDTO(this.userService.getUserByLogin(username));
     }
 
     private static CredencialDTO getCredencialDTO() {

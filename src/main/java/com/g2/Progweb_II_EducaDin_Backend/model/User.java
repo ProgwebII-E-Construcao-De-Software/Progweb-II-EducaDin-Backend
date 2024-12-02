@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 @Builder
@@ -36,4 +39,13 @@ public class User implements GenericModel<Long> {
     @JsonManagedReference
     @MandatoryField(name = "loginEnt", type = "Login")
     protected Login loginEnt;
+
+    @MandatoryField(name = "roles", type = "List<String>")
+    @Column(name = "roles")
+    @ElementCollection
+    private List<String> roles;
+
+    @MandatoryField(name = "activeState", type = "boolean")
+    @Column(name = "activeState")
+    private boolean activeState;
 }

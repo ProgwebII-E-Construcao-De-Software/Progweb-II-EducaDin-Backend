@@ -23,5 +23,7 @@ public interface UserMapper extends GenericMapper<CredencialDTO, UserCreateDTO, 
     @Mapping(source = "password", target = "loginEnt.password")
     User fromCreateDTOToModel(UserCreateDTO dto);
 
+
+    @Mapping(source = "loginEnt.password", target = "password")
     CredencialDTO toCredentialDTO(User user);
 }

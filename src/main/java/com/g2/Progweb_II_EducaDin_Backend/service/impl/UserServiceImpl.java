@@ -1,22 +1,18 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
-import br.ueg.progweb2.arquitetura.model.dtos.AuthDTO;
 import br.ueg.progweb2.arquitetura.model.dtos.AuthUserDTO;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import br.ueg.progweb2.arquitetura.util.Util;
-import com.g2.Progweb_II_EducaDin_Backend.AppStartupRunner;
 import com.g2.Progweb_II_EducaDin_Backend.model.Login;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.UserService;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl extends GenericCrudService<User, Long, UserRepository> implements UserService {
@@ -31,6 +27,27 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
         dado.setLoginEnt(new Login());
         dado.getLoginEnt().setUser(dado);
         dado.getLoginEnt().setPassword(bCryptPasswordEncoder.encode(key));
+        dado.setRoles(Arrays.asList(
+                "ROLE_INCOME_REMOVEALL",
+                "ROLE_INCOME_CREATE",
+                "ROLE_INCOME_READ",
+                "ROLE_INCOME_UPDATE",
+                "ROLE_INCOME_DELETE",
+                "ROLE_INCOME_READ_ALL",
+                "ROLE_EXPENSE_REMOVEALL",
+                "ROLE_EXPENSE_CREATE",
+                "ROLE_EXPENSE_READ",
+                "ROLE_EXPENSE_UPDATE",
+                "ROLE_EXPENSE_DELETE",
+                "ROLE_EXPENSE_READ_ALL",
+                "ROLE_GOAL_REMOVEALL",
+                "ROLE_GOAL_CREATE",
+                "ROLE_GOAL_READ",
+                "ROLE_GOAL_UPDATE",
+                "ROLE_GOAL_DELETE",
+                "ROLE_GOAL_READ_ALL"
+        ));
+        dado.setActiveState(true);
 
     }
 
@@ -49,7 +66,26 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
 
     @Override
     protected void prepareToUpdate(User newModel, User model) {
-
+        newModel.setRoles(Arrays.asList(
+                "ROLE_INCOME_REMOVEALL",
+                "ROLE_INCOME_CREATE",
+                "ROLE_INCOME_READ",
+                "ROLE_INCOME_UPDATE",
+                "ROLE_INCOME_DELETE",
+                "ROLE_INCOME_READ_ALL",
+                "ROLE_EXPENSE_REMOVEALL",
+                "ROLE_EXPENSE_CREATE",
+                "ROLE_EXPENSE_READ",
+                "ROLE_EXPENSE_UPDATE",
+                "ROLE_EXPENSE_DELETE",
+                "ROLE_EXPENSE_READ_ALL",
+                "ROLE_GOAL_REMOVEALL",
+                "ROLE_GOAL_CREATE",
+                "ROLE_GOAL_READ",
+                "ROLE_GOAL_UPDATE",
+                "ROLE_GOAL_DELETE",
+                "ROLE_GOAL_READ_ALL"
+        ));
     }
 
     @Override
@@ -82,6 +118,11 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
 
     @Override
     public User getUserByUserName(String username) {
+        return repository.findByLogin(username);
+    }
+
+    @Override
+    public User getUserByLogin(String username) {
         return repository.findByLogin(username);
     }
 }
