@@ -15,7 +15,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig extends ApiSecurityConfig {
-    @Value("${app.api.base}")
+    @Value("${app.api.version}")
     private String apiBase;
 
     @Override
@@ -24,6 +24,6 @@ public class SecurityConfig extends ApiSecurityConfig {
 
     @Override
     protected List<String> getCustomFreeAccessPaterns() {
-        return Arrays.asList(apiBase.concat("/incomes/list-actives"));
+        return Arrays.asList(apiBase.concat("/user/novo"));
     }
 }
