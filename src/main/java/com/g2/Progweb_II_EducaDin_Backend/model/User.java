@@ -42,7 +42,8 @@ public class User implements GenericModel<Long> {
 
     @MandatoryField(name = "roles", type = "List<String>")
     @Column(name = "roles")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private List<String> roles;
 
     @MandatoryField(name = "activeState", type = "boolean")
