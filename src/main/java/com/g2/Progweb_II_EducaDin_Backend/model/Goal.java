@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,10 @@ public class Goal implements GenericModel<Long> {
     @MandatoryField(type = "LocalDate", name = "goal_date")
     @Column(name = "goal_date", nullable = false)
     private LocalDate goalDate;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 

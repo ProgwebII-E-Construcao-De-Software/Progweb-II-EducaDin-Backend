@@ -5,4 +5,5 @@ import java.time.LocalDate;
 public record GoalDTOUpdate(String name,
                             Double amountReached,
                             Double amountTotal,
-                            LocalDate goalDate) { }
+                            LocalDate goalDate,
+                            Long userId) { }

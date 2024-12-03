@@ -10,4 +10,5 @@ public record IncomeDTOCreateUpdate(String categoryName,
                               Double amount,
                               Repeatable repeatable,
                               LocalDate incomeDate,
-                              Integer leadTime) { }
+                              Integer leadTime,
+                                    Long userId) { }

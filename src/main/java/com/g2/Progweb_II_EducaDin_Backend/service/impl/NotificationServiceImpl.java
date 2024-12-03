@@ -1,7 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
-import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
+import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.mapper.NotificationMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
@@ -29,14 +29,13 @@ public class NotificationServiceImpl extends GenericCrudService<Notification, Lo
 
         boolean isEnabled = preferenceService.isNotificationTypeEnabled(notificationDTO.userId(), notificationDTO.type());
         if (!isEnabled) {
-            throw new BusinessException("Notifications of this type are disabled for the user.",
-                    ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Notifications of this type are disabled for the user.");
         }
 
-        Notification notification = notificationMapper.fromDTOtoModel(notificationDTO);
+        Notification notification = notificationMapper.toModel(notificationDTO);
 
         Notification savedNotification = repository.save(notification);
-        return notificationMapper.fromModeltoDTO(savedNotification);
+        return notificationMapper.toDTO(savedNotification);
     }
 
     @Override
@@ -49,18 +48,9 @@ public class NotificationServiceImpl extends GenericCrudService<Notification, Lo
 
     }
 
-    @Override
-    protected void validateBusinessLogicToDelete(Notification model) {
-
-    }
 
     @Override
     protected void validateBusinessLogic(Notification data) {
-
-    }
-
-    @Override
-    protected void validateBusinessToList(List<Notification> notifications) {
 
     }
 

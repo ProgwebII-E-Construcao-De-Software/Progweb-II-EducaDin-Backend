@@ -3,6 +3,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,11 @@ public class Category implements GenericModel<Long> {
     @MandatoryField(name = "IExpense", type = "boolean")
     @Column(nullable = false)
     private boolean IExpense;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public boolean getIExpense() {
         return IExpense;

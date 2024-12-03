@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -53,6 +54,11 @@ public class Income implements GenericModel<Long> {
     @Enumerated(EnumType.STRING)
     @Column(name = "repeatable")
     private Repeatable repeatable;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Override
     public String toString(){

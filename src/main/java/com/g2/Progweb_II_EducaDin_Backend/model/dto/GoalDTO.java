@@ -8,5 +8,6 @@ public record GoalDTO(Long id,
                       String name,
                       Double amountReached,
                       Double amountTotal,
-                      LocalDate goalDate) {
+                      LocalDate goalDate,
+                      Long userId) {
 }

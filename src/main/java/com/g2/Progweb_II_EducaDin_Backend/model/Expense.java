@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,15 +53,10 @@ public class Expense implements GenericModel<Long> {
     @Column(name = "date")
     private LocalDate expenseDate;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Override
     public String toString(){

@@ -17,13 +17,13 @@ public interface NotificationPreferenceMapper extends GenericMapper<
         Long> {
 
     @Override
-    NotificationPreference fromDTOCreateToModel(NotificationPreferenceDTOCreateUpdate dto);
+    NotificationPreference fromModelCreatedToModel(NotificationPreferenceDTOCreateUpdate dto);
 
     @Override
-    NotificationPreference fromDTOUpdateToModel(NotificationPreferenceDTOCreateUpdate dto);
+    NotificationPreference fromModelUpdatedToModel(NotificationPreferenceDTOCreateUpdate dto);
 
     @Override
-    NotificationPreferenceDTO fromModeltoDTO(NotificationPreference model);
+    NotificationPreferenceDTO toDTO(NotificationPreference model);
 
     @Override
     @Named(value = "toDTOList")

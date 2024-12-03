@@ -15,8 +15,8 @@ public interface NotificationMapper extends GenericMapper<
         Long> {
 
     @Override
-    Notification fromDTOtoModel(NotificationDTO dto);
+    Notification toModel(NotificationDTO dto);
 
     @Override
-    NotificationDTO fromModeltoDTO(Notification model);
+    NotificationDTO toDTO(Notification model);
 }
