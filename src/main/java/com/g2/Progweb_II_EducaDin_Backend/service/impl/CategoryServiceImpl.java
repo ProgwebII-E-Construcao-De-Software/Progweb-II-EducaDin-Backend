@@ -1,15 +1,18 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.CategoryDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.repository.CategoryRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
 import com.g2.Progweb_II_EducaDin_Backend.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +23,9 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public boolean existsByName(String name) {
@@ -41,6 +47,13 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Override
     protected void prepareToCreate(Category category) {
+        if(Objects.nonNull(category.getUser())){
+            User user = userRepository.findById(category.getUser().getId()).orElse(null);
+            if (user != null) {
+                category.setUser(user);
+            }
+        }
+
 
     }
 
@@ -52,7 +65,10 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Override
     protected void prepareToUpdate(Category newModel, Category model) {
-
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
     @Override

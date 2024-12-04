@@ -5,7 +5,7 @@ import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import br.ueg.progweb2.arquitetura.mapper.GenericMapper;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface CategoryMapper extends GenericMapper<
         CategoryDTO,
         CategoryDTO,

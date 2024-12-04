@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import br.ueg.progweb2.arquitetura.model.annotation.Searchable;
 import br.ueg.progweb2.arquitetura.model.dtos.CredencialDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,10 +28,12 @@ public class User implements GenericModel<Long> {
     private Long id;
 
     @MandatoryField(name = "login", type = "String")
+    @Searchable(label = "login", autoComplete = true )
     @Column(name = "login")
     private String login;
 
     @MandatoryField(name = "email", type = "String")
+    @Searchable(label = "email", autoComplete = true )
     @Column(name = "email")
     private String email;
 

@@ -6,7 +6,9 @@ import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
 import com.g2.Progweb_II_EducaDin_Backend.service.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
    @Autowired
    CategoryService categoryService;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void prepareToCreate(Income newModel) {
@@ -33,6 +37,10 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         }
         if(Objects.isNull(newModel.getRepeatable())){
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
+        }
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
         }
 
     }
@@ -76,6 +84,10 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         }
         else{
             newModel.setCategory(categoryService.create(newModel.getCategory()));
+        }
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
         }
     }
 

@@ -45,8 +45,19 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
                 "ROLE_GOAL_READ",
                 "ROLE_GOAL_UPDATE",
                 "ROLE_GOAL_DELETE",
-                "ROLE_GOAL_READ_ALL"
-        ));
+                "ROLE_GOAL_READ_ALL",
+                "ROLE_NOTIFICATION_READ_ALL",
+                "ROLE_NOTIFICATION_CREATE",
+                "ROLE_NOTIFICATION_READ",
+                "ROLE_NOTIFICATION_UPDATE",
+                "ROLE_NOTIFICATION_DELETE",
+                "ROLE_NOTIFICATION_READ_ALL",
+                "ROLE_NOTIFICATIONPREFERENCE_READ_ALL",
+                "ROLE_NOTIFICATIONPREFERENCE_CREATE",
+                "ROLE_NOTIFICATIONPREFERENCE_READ",
+                "ROLE_NOTIFICATIONPREFERENCE_UPDATE",
+                "ROLE_NOTIFICATIONPREFERENCE_DELETE",
+                "ROLE_NOTIFICATIONPREFERENCE_READ_ALL"));
         dado.setActiveState(true);
 
     }

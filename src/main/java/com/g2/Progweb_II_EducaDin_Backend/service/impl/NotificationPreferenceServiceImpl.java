@@ -4,8 +4,11 @@ import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.NotificationPreference;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.NotificationPreferenceRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.NotificationPreferenceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +18,21 @@ import java.util.Objects;
 public class NotificationPreferenceServiceImpl extends GenericCrudService<NotificationPreference, Long, NotificationPreferenceRepository>
         implements NotificationPreferenceService {
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     protected void prepareToCreate(NotificationPreference newModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
     @Override
     protected void validateBusinessLogicToCreate(NotificationPreference newModel) {
         validateBusinessLogic(newModel);
-        if (repository.existsByUserIdAndType(newModel.getUserId(), newModel.getType())) {
+        if (repository.existsByUserIdAndType(newModel.getUser().getId(), newModel.getType())) {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "A preference for this type already exists for the user.");
         }
     }
@@ -31,6 +41,10 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     protected void prepareToUpdate(NotificationPreference newModel, NotificationPreference model) {
         if (newModel.getEnabled() != model.isEnabled()) {
             model.setEnabled(newModel.isEnabled());
+        }
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
         }
     }
 
@@ -51,7 +65,7 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
                     "Model is null." );
         }
-        if (Objects.isNull(model.getUserId())) {
+        if (Objects.isNull(model.getUser().getId())) {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
                     "User ID cannot be null.");
         }

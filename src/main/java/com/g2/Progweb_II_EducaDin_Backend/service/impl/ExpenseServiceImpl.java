@@ -5,7 +5,9 @@ import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.ExpenseRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
 import com.g2.Progweb_II_EducaDin_Backend.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     protected void prepareToCreate(Expense newModel) {
         String name = newModel.getCategory().getName();
@@ -27,6 +32,10 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         }
         else{
             newModel.setCategory(categoryService.create(newModel.getCategory()));
+        }
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
         }
 
     }

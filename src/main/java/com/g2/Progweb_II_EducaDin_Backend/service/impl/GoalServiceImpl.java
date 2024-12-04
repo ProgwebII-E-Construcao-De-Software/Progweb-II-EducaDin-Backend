@@ -1,32 +1,35 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
-import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
+import com.g2.Progweb_II_EducaDin_Backend.mapper.UserMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
-import com.g2.Progweb_II_EducaDin_Backend.model.Income;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
-import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
-import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.GoalService;
-import com.g2.Progweb_II_EducaDin_Backend.service.IncomeService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalRepository> implements GoalService {
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void prepareToCreate(Goal newModel) {
         newModel.setName(Strings.toRootUpperCase(newModel.getName()));
         newModel.setAmountReached(0.0);
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
     @Override
@@ -53,6 +56,10 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     @Override
     protected void prepareToUpdate(Goal newModel, Goal model) {
         newModel.setName(Strings.toRootUpperCase(newModel.getName()));
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
     @Override
@@ -63,7 +70,6 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         }
         validateAmbiguous(model);
     }
-
 
     @Override
     protected void validateBusinessLogic(Goal model) {

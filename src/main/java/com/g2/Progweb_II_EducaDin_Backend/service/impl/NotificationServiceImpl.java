@@ -5,8 +5,10 @@ import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.mapper.NotificationMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.NotificationDTO;
 import com.g2.Progweb_II_EducaDin_Backend.repository.NotificationRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.NotificationService;
 import com.g2.Progweb_II_EducaDin_Backend.service.NotificationPreferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import java.util.List;
 @Service
 public class NotificationServiceImpl extends GenericCrudService<Notification, Long, NotificationRepository>
         implements NotificationService {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private NotificationMapper notificationMapper;
@@ -41,6 +46,7 @@ public class NotificationServiceImpl extends GenericCrudService<Notification, Lo
     @Override
     protected void validateBusinessLogicToCreate(Notification model) {
 
+
     }
 
     @Override
@@ -56,11 +62,19 @@ public class NotificationServiceImpl extends GenericCrudService<Notification, Lo
 
     @Override
     protected void prepareToCreate(Notification newModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
 
     }
 
     @Override
     protected void prepareToUpdate(Notification newModel, Notification existingModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
 
     }
 

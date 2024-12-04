@@ -2,6 +2,7 @@ package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,9 +18,10 @@ public class NotificationPreference implements GenericModel<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @MandatoryField(name = "UserId", type = "Long")
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @MandatoryField(name = "Type", type = "String")
     @Column(name = "type", nullable = false)
@@ -59,7 +61,7 @@ public class NotificationPreference implements GenericModel<Long> {
                     Type: %s,
                     Enabled: %b""",
                 id,
-                userId,
+                user.getId(),
                 type,
                 enabled);
     }
