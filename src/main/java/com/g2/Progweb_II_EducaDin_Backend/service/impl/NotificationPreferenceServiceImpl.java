@@ -3,6 +3,7 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
+import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.NotificationPreference;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.NotificationPreferenceRepository;
@@ -78,6 +79,11 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     @Override
     public List<NotificationPreference> listAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<NotificationPreference> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
     @Override

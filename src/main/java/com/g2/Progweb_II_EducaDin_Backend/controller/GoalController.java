@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,4 +34,28 @@ public class GoalController extends GenericCRUDController<
         Long,
         GoalService,
         GoalMapper> {
+
+    @PreAuthorize(value = "hasRole('ROLE_GOAL_READ')")
+    @GetMapping(path = "/user/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(description = "Obter os dados completos de uma entidiade pelo id do usuario informado!", responses = {
+            @ApiResponse(responseCode = "200", description = "Entidade encontrada",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "Registro não encontrado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Acesso negado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de Negócio",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class)))
+    })
+    public ResponseEntity<List<GoalListDTO>> getByUserId(
+            @Parameter(description = "Id do usuario")
+            @PathVariable("id") Long id
+    ) {
+        List<GoalListDTO> dtoResult = mapper.fromModelToDTOList(service.listAll(id));
+        return ResponseEntity.ok(dtoResult);
+    }
 }

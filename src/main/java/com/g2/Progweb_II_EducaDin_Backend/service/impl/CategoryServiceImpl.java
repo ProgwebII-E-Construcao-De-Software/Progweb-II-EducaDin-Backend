@@ -87,6 +87,11 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     }
 
     @Override
+    public List<Category> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
+    }
+
+    @Override
     public Category deleteById(Long id) {
         return null;
     }

@@ -5,6 +5,7 @@ import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.mapper.UserMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
+import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
@@ -95,6 +96,11 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
             return model;
         }
         return null;
+    }
+
+    @Override
+    public List<Goal> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
     protected Goal validateId(Long id) {

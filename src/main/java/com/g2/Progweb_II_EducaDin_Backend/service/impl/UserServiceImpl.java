@@ -19,6 +19,8 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
 
 
 
+
+
     @Override
     protected void prepareToCreate(User dado) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -46,6 +48,12 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
                 "ROLE_GOAL_UPDATE",
                 "ROLE_GOAL_DELETE",
                 "ROLE_GOAL_READ_ALL",
+                "ROLE_CATEGORY_REMOVEALL",
+                "ROLE_CATEGORY_CREATE",
+                "ROLE_CATEGORY_READ",
+                "ROLE_CATEGORY_UPDATE",
+                "ROLE_CATEGORY_DELETE",
+                "ROLE_CATEGORY_READ_ALL",
                 "ROLE_NOTIFICATION_READ_ALL",
                 "ROLE_NOTIFICATION_CREATE",
                 "ROLE_NOTIFICATION_READ",

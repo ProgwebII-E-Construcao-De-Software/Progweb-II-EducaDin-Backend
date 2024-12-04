@@ -5,7 +5,9 @@ import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
+import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
+import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
@@ -14,6 +16,7 @@ import com.g2.Progweb_II_EducaDin_Backend.service.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,7 +31,9 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToCreate(Income newModel) {
+        if(Objects.nonNull(newModel.getUser())){
         String name = newModel.getCategory().getName();
+        newModel.getCategory().setUser(newModel.getUser());
         if(categoryService.existsByName(name)){
             newModel.setCategory(categoryService.create(categoryService.getCategoryByName(name)));
         }
@@ -37,12 +42,13 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         }
         if(Objects.isNull(newModel.getRepeatable())){
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+            if (user != null) {
+                newModel.setUser(user);
+                createFutureIncomes(newModel);
+            }
         }
-        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-        if (user != null) {
-            newModel.setUser(user);
         }
-
     }
 
     @Override
@@ -89,6 +95,16 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         if (user != null) {
             newModel.setUser(user);
         }
+
+        if (newModel.getRepeatable() != Repeatable.DONT_REPEATS || !newModel.getIncomeDate().equals(model.getIncomeDate())) {
+            repository.deleteByNameAndUserAndCategoryAndIncomeDateAfter(
+                    model.getName(),
+                    model.getUser(),
+                    model.getCategory(),
+                    model.getIncomeDate()
+            );
+            createFutureIncomes(newModel);
+        }
     }
 
     @Override
@@ -112,17 +128,16 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     public List<Income> listAll() {
-        return repository.findAll();
+        return repository.findAllByIncomeDateBeforeOrIncomeDateEquals(LocalDate.now(), LocalDate.now());
     }
 
     @Override
-    public Income deleteById(Long id) {
-        Income model = validateId(id);
-        if(Objects.nonNull(model)){
-            repository.deleteById(id);
-            return model;
-        }
-        return null;
+    public List<Income> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
+    }
+
+    public List<Income> listAllContemporaneous(Long userId) {
+        return repository.findAllByUserIdAndIncomeDateBefore(userId, LocalDate.now().plusDays(1));
     }
 
     protected Income validateId(Long id) {
@@ -130,5 +145,48 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         return incomeOptional.orElse(null);
     }
 
+    public void createFutureIncomes(Income baseIncome) {
+        if (baseIncome.getRepeatable() != Repeatable.DONT_REPEATS && baseIncome.getLeadTime() > 0) {
+            LocalDate nextDate = baseIncome.getIncomeDate();
+            for (int i = 0; i < baseIncome.getLeadTime(); i++) {
+                nextDate = calculateNextDate(nextDate, baseIncome.getRepeatable());
+
+                Income futureIncome = Income.builder()
+                        .name(baseIncome.getName())
+                        .description(baseIncome.getDescription())
+                        .amount(baseIncome.getAmount())
+                        .incomeDate(nextDate)
+                        .leadTime(0)
+                        .repeatable(Repeatable.DONT_REPEATS)
+                        .category(baseIncome.getCategory())
+                        .user(baseIncome.getUser())
+                        .build();
+                repository.save(futureIncome);
+            }
+        }
+    }
+
+
+    private LocalDate calculateNextDate(LocalDate currentDate, Repeatable repeatable) {
+        return switch (repeatable) {
+            case WEEKLY -> currentDate.plusWeeks(1);
+            case MONTHLY -> currentDate.plusMonths(1);
+            case YEARLY -> currentDate.plusYears(1);
+            default -> throw new IllegalArgumentException("Unsupported Repeatable type: " + repeatable);
+        };
+    }
+
+    @Override
+    public Income deleteById(Long id) {
+        Income model = validateId(id);
+        if (Objects.nonNull(model)) {
+            repository.deleteByNameAndUserAndCategoryAndIncomeDateAfter(
+                    model.getName(), model.getUser(), model.getCategory(), model.getIncomeDate()
+            );
+            repository.deleteById(id);
+            return model;
+        }
+        return null;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.repository;
 
+import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
@@ -11,4 +12,5 @@ import java.util.List;
 @Repository
 public interface GoalRepository extends JpaRepository<Goal, Long>{
     Goal findByNameEqualsIgnoreCase(String name);
+    List<Goal> findAllByUserId(long userId);
 }

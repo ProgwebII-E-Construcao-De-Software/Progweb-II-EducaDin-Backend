@@ -84,6 +84,11 @@ public class NotificationServiceImpl extends GenericCrudService<Notification, Lo
     }
 
     @Override
+    public List<Notification> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
+    }
+
+    @Override
     public Notification deleteById(Long id) {
         return null;
     }
