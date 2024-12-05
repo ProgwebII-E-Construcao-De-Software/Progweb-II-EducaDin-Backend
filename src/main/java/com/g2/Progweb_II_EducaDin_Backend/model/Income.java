@@ -1,15 +1,13 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
+import br.ueg.progweb2.arquitetura.interfaces.ISearchFieldData;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import br.ueg.progweb2.arquitetura.model.annotation.Searchable;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,12 +18,13 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Builder
 @Table(name = "income")
-public class Income implements GenericModel<Long> {
+public class Income implements GenericModel<Long>, ISearchFieldData<Long>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     @Searchable(label = "id", autoComplete = true )
+    @Setter
     private Long id;
 
     @ManyToOne
@@ -34,37 +33,38 @@ public class Income implements GenericModel<Long> {
 
     @MandatoryField(type = "String", name = "Name")
     @Column(name = "name", nullable = false)
-    @Searchable(label = "name", autoComplete = true )
+    @Searchable(label = "nome", autoComplete = true )
     private String name;
 
     @MandatoryField(type = "String", name = "Description")
     @Column(name = "description", nullable = false)
-    @Searchable(label = "description", autoComplete = true )
+    @Searchable(label = "descrição", autoComplete = true )
     private String description;
 
     @MandatoryField(type = "Double", name = "Amount")
     @Column(name = "amount", nullable = false)
-    @Searchable(label = "amount", autoComplete = true )
+    @Searchable(label = "valor", autoComplete = true )
     private Double amount;
 
     @MandatoryField(type = "Integer", name = "LeadTime")
-    @Column(name = "leadtime")
+    @Column(name = "indice")
     private Integer leadTime;
 
     @MandatoryField(type = "LocalDate", name = "incomeDate")
     @Searchable(label = "incomeDate", autoComplete = true )
-    @Column(name = "incomeDate")
+    @Column(name = "data")
     private LocalDate incomeDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "repeatable")
-    @Searchable(label = "description", autoComplete = true )
+    @Searchable(label = "repetivel", autoComplete = true )
     private Repeatable repeatable;
 
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 
     @Override
     public String toString(){
@@ -87,4 +87,8 @@ public class Income implements GenericModel<Long> {
                 incomeDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
+    @Override
+    public String getSearchDescription() {
+        return toString();
+    }
 }

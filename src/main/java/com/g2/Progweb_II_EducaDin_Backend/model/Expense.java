@@ -1,5 +1,6 @@
 package com.g2.Progweb_II_EducaDin_Backend.model;
 
+import br.ueg.progweb2.arquitetura.interfaces.ISearchFieldData;
 import br.ueg.progweb2.arquitetura.model.GenericModel;
 import br.ueg.progweb2.arquitetura.annotations.MandatoryField;
 import br.ueg.progweb2.arquitetura.model.annotation.Searchable;
@@ -20,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @Entity
 @Table(name = "expense")
-public class Expense implements GenericModel<Long> {
+public class Expense implements GenericModel<Long>, ISearchFieldData<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,22 +33,22 @@ public class Expense implements GenericModel<Long> {
 
     @MandatoryField(type = "String", name = "Name")
     @Column(name = "name", nullable = false)
-    @Searchable(label = "name", autoComplete = true )
+    @Searchable(label = "nome", autoComplete = true )
     private String name;
 
     @MandatoryField(type = "String", name = "Description")
     @Column(name = "description", nullable = false)
-    @Searchable(label = "description", autoComplete = true )
+    @Searchable(label = "descricao", autoComplete = true )
     private String description;
 
     @MandatoryField(type = "Double", name = "Price")
     @Column(name = "amount", nullable = false)
-    @Searchable(label = "amount", autoComplete = true )
+    @Searchable(label = "valor", autoComplete = true )
     private Double amount;
 
     @MandatoryField(type = "Integer", name = "LeadTime")
     @Column(name = "leadtime")
-    @Searchable(label = "leadtime", autoComplete = true )
+    @Searchable(label = "indice", autoComplete = true )
     private Integer leadTime;
 
     @Enumerated(EnumType.STRING)
@@ -56,7 +57,7 @@ public class Expense implements GenericModel<Long> {
 
     @MandatoryField(type = "Date", name = "date")
     @Column(name = "date")
-    @Searchable(label = "expenseDate", autoComplete = true )
+    @Searchable(label = "data", autoComplete = true )
     private LocalDate expenseDate;
 
     @JsonManagedReference
@@ -79,5 +80,10 @@ public class Expense implements GenericModel<Long> {
                 amount,
                 leadTime,
                 expenseDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    }
+
+    @Override
+    public String getSearchDescription() {
+        return toString();
     }
 }

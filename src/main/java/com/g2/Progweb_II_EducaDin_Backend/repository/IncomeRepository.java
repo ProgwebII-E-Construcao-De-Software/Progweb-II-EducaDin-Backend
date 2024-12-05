@@ -5,6 +5,7 @@ import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface IncomeRepository extends JpaRepository<Income, Long> {
+public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecificationExecutor<Income> {
     List<Income> findAllByName(String name);
     List<Income> findAllByUserId(long userId);
     List<Income> findAllByIncomeDateBeforeOrIncomeDateEquals(LocalDate date, LocalDate date2);
