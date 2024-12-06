@@ -26,16 +26,6 @@ public class Tip implements GenericModel<Long> {
     private String message;
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
     public String toString() {
         return String.format("""
                     Id: %d,

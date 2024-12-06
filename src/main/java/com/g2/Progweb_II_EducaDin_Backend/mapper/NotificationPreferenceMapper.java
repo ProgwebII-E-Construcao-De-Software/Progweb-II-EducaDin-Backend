@@ -5,9 +5,10 @@ import com.g2.Progweb_II_EducaDin_Backend.model.NotificationPreference;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.NotificationPreferenceDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.NotificationPreferenceDTOCreateUpdate;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface NotificationPreferenceMapper extends GenericMapper<
         NotificationPreferenceDTO,
         NotificationPreferenceDTOCreateUpdate,
@@ -17,15 +18,19 @@ public interface NotificationPreferenceMapper extends GenericMapper<
         Long> {
 
     @Override
-    NotificationPreference fromDTOCreateToModel(NotificationPreferenceDTOCreateUpdate dto);
+    @Mapping(target = "user.id", source = "userId")
+    NotificationPreference fromModelCreatedToModel(NotificationPreferenceDTOCreateUpdate dto);
 
     @Override
-    NotificationPreference fromDTOUpdateToModel(NotificationPreferenceDTOCreateUpdate dto);
+    @Mapping(target = "user.id", source = "userId")
+    NotificationPreference fromModelUpdatedToModel(NotificationPreferenceDTOCreateUpdate dto);
 
     @Override
-    NotificationPreferenceDTO fromModeltoDTO(NotificationPreference model);
+    @Mapping(target = "userId", source = "user.id")
+    NotificationPreferenceDTO toDTO(NotificationPreference model);
 
     @Override
+    @Mapping(target = "userId", source = "user.id")
     @Named(value = "toDTOList")
     NotificationPreferenceDTO toDTOList(NotificationPreference model);
 }

@@ -8,22 +8,27 @@ import com.g2.Progweb_II_EducaDin_Backend.model.dto.GoalDTOUpdate;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.GoalListDTO;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", uses = CategoryMapper.class)
+@Mapper(componentModel = "spring", uses = {CategoryMapper.class, UserMapper.class})
 public interface GoalMapper extends GenericMapper<GoalDTO, GoalDTOCreate, GoalDTOUpdate, GoalListDTO, Goal, Long> {
 
-    Goal fromDTOtoModel(GoalDTOUpdate dto);
+    @Mapping(target = "user.id", source = "userId")
+    Goal toModel(GoalDTOUpdate dto);
 
+    @Mapping(target = "user.id", source = "userId")
     @Override
-    Goal fromDTOCreateToModel(GoalDTOCreate dto);
+    Goal fromModelCreatedToModel(GoalDTOCreate dto);
 
+    @Mapping(target = "userId", source = "user.id")
     @Override
-    GoalDTO fromModeltoDTO(Goal model);
+    GoalDTO toDTO(Goal model);
 
     @Override
     @Named(value = "toDTOList")
     @Mapping(target = "goalPercent", expression = "java((100.0 * model.getAmountReached()) / model.getAmountTotal())")
+    @Mapping(target = "userId", source = "user.id")
     GoalListDTO toDTOList(Goal model);
 
     @Override
-    Goal fromDTOUpdateToModel(GoalDTOUpdate goalDTOUpdate);
+    @Mapping(target = "user.id", source = "userId")
+    Goal fromModelUpdatedToModel(GoalDTOUpdate goalDTOUpdate);
 }

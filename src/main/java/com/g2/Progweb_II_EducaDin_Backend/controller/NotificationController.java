@@ -19,4 +19,6 @@ public class NotificationController {
         NotificationDTO createdNotification = notificationService.createNotification(notificationDTO);
         return ResponseEntity.ok(createdNotification);
     }
+
+
 }

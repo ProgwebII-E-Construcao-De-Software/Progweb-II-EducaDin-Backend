@@ -7,5 +7,6 @@ public record GoalListDTO(Long id,
                           Double amountReached,
                           Double amountTotal,
                           LocalDate goalDate,
-                          Double goalPercent) {
+                          Double goalPercent,
+                          Long userId) {
 }

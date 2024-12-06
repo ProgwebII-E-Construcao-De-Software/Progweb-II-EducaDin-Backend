@@ -16,13 +16,13 @@ public interface TipMapper extends GenericMapper<
         Long> {
 
     @Override
-    Tip fromDTOCreateToModel(TipDTO dto);
+    Tip fromModelCreatedToModel(TipDTO dto);
 
     @Override
-    Tip fromDTOUpdateToModel(TipDTO dto);
+    Tip fromModelUpdatedToModel(TipDTO dto);
 
     @Override
-    TipDTO fromModeltoDTO(Tip model);
+    TipDTO toDTO(Tip model);
 
     @Override
     @Named(value = "toDTOList")

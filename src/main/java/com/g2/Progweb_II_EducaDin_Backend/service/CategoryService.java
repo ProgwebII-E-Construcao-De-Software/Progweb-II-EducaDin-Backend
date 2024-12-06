@@ -10,4 +10,6 @@ public interface CategoryService extends CrudService<Category, Long> {
     boolean existsByName(String name);
     List<CategoryDTO> getCategoriesByIExpense(boolean IExpense);
     Category getCategoryByName(String name);
+
+    List<Category> listAll(Long userId);
 }
