@@ -5,13 +5,12 @@ import lombok.Getter;
 
 public enum ErrorValidation implements MessageCode {
 
-
-    GENERAL( "Undefined error!", 500),
-    INVALID_ID("Invalid Id!",400),
-    NOT_FOUND("Not found!", 404),
-    MANDATORY_FIELD_VIOLATION("Mandatory field must be filled up!", 400),
-    USER_ALREADY_EXISTS("User already exists", 405),
-    BUSINESS_LOGIC_VIOLATION("Business logic violation!", 407);
+    GENERAL( "MSG-100", 500),
+    INVALID_ID("MSG-101",400),
+    NOT_FOUND("MSG-102", 404),
+    MANDATORY_FIELD_VIOLATION("ME004", 400),
+    USER_ALREADY_EXISTS("MSG-104", 405),
+    BUSINESS_LOGIC_VIOLATION("MSG-105", 407);
 
     private final String code;
 
