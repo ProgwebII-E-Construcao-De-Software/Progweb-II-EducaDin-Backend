@@ -100,31 +100,31 @@ public class AppStartupRunner extends AbstractAppStartupRunner {
 				1200.0,
 				"Pagamento mensal de aluguel",
 				LocalDate.now(),
-				1, user);
+				1, Repeatable.DONT_REPEATS, user);
 		persistExpense("Internet",
 				category2,
 				150.0,
 				"Fatura de internet",
 				LocalDate.now().plusDays(5),
-				2, user);
+				2, Repeatable.DONT_REPEATS, user);
 		persistExpense("Supermercado",
 				category2,
 				350.0,
 				"Compras mensais de supermercado",
 				LocalDate.now().plusDays(3),
-				3, user);
+				3, Repeatable.DONT_REPEATS, user);
 		persistExpense("Combustível",
 				category2,
 				250.0,
 				"Abastecimento do carro",
 				LocalDate.now().minusDays(1),
-				4, user);
+				4, Repeatable.DONT_REPEATS, user);
 		persistExpense("Academia",
 				category2,
 				100.0,
 				"Mensalidade da academia",
 				LocalDate.now().plusWeeks(1),
-				1, user);
+				1, Repeatable.DONT_REPEATS, user);
 
 	}
 
@@ -214,6 +214,7 @@ private void persistExpense(String name,
 							String description,
 							LocalDate incomeDate,
 							int leadTime,
+							Repeatable repeatable,
 							User user) {
 		Expense expense = Expense.builder()
 				.name(name)
@@ -222,6 +223,7 @@ private void persistExpense(String name,
 				.description(description)
 				.expenseDate(incomeDate)
 				.leadTime(leadTime)
+				.repeatable(repeatable)
 				.user(user)
 				.build();
 		LOG.info("New Expense: {}", this.expenseRepository.save(expense).toString());

@@ -62,7 +62,7 @@ public class Expense implements GenericModel<Long>, ISearchFieldData<Long> {
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Override
