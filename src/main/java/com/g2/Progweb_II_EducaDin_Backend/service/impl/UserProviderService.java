@@ -45,7 +45,7 @@ public class UserProviderService implements IUserProviderService {
                 resetPassword(authUserDTO);
                 emailSenderService.send(
                         authUserDTO.getEmail(),
-                        "Definição de Senha",
+                        "Redefinição de Senha",
                         "Olá, aqui é o Educadin!\n" +
                                 "Sua senha de recuperação é: " + newPlainPassword +
                                 "\nATENÇÃO: Mude sua senha após o primeiro acesso!"

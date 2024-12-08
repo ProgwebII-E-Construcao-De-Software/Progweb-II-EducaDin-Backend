@@ -50,23 +50,4 @@ public class UserController {
         return ResponseEntity.ok(credencialTO);
     }
 
-    @Operation(description = "Permite a atualização de um usuário",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Success",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CredencialDTO.class))),
-                    @ApiResponse(responseCode = "403", description = "Proibido",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = MessageResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad Request",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = MessageResponse.class)))
-            })
-    @PostMapping(path = "/atualizar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@Parameter(description = "Informações de Criação", required = true) @Valid @RequestBody final AuthUserDTO userUpdateDTO)  {
-        CredencialDTO credencialTO = userMapper.toCredentialDTO(
-                userService.update(userMapper.fromModelUpdatedToModel(userUpdateDTO)));
-        return ResponseEntity.ok(credencialTO);
-    }
-
 }

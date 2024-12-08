@@ -7,9 +7,8 @@ import com.g2.Progweb_II_EducaDin_Backend.model.dto.CategoryDTO;
 import java.util.List;
 
 public interface CategoryService extends CrudService<Category, Long> {
-    boolean existsByName(String name);
-    List<CategoryDTO> getCategoriesByIExpense(boolean IExpense);
-    Category getCategoryByName(String name);
-
+    boolean existsByNameAndUserId(String name, Long id);
+    List<CategoryDTO> getCategoriesByIExpenseAndUserId(boolean IExpense, Long userId);
+    Category getCategoryByNameAndUserId(String name, Long userId);
     List<Category> listAll(Long userId);
 }

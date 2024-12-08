@@ -3,6 +3,7 @@ package com.g2.Progweb_II_EducaDin_Backend.mapper;
 import br.ueg.progweb2.arquitetura.mapper.GenericMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTOCreateUpdate;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeListDTO;
@@ -16,12 +17,12 @@ public abstract class IncomeMapper implements GenericMapper<IncomeDTO, IncomeDTO
     @Autowired
     private CategoryService categoryService;
 
-    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
+    @Mapping(target = "category", expression = "java(resolveCategoryByName(dto.categoryName(), dto.userId()))")
     @Mapping(target = "user.id", source = "userId")
     public abstract Income toModel(IncomeDTOCreateUpdate dto);
 
     @Override
-    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
+    @Mapping(target = "category", expression = "java(resolveCategoryByName(dto.categoryName(), dto.userId()))")
     @Mapping(target = "user.id", source = "userId")
     public abstract Income fromModelCreatedToModel(IncomeDTOCreateUpdate dto);
 
@@ -36,19 +37,22 @@ public abstract class IncomeMapper implements GenericMapper<IncomeDTO, IncomeDTO
     public abstract IncomeListDTO toDTOList(Income model);
 
     @Override
-    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
+    @Mapping(target = "category", expression = "java(resolveCategoryByName(incomeDTOCreateUpdate.categoryName(), incomeDTOCreateUpdate.userId()))")
     @Mapping(target = "user.id", source = "userId")
     public abstract Income fromModelUpdatedToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
 
     @Named("resolveCategoryByName")
-    protected Category resolveCategoryByName(String categoryName) {
+    protected Category resolveCategoryByName(String categoryName, Long userId) {
         if (categoryName == null || categoryName.trim().isEmpty()) {
             return null;
         }
-        Category category = categoryService.getCategoryByName(categoryName);
+        Category category = categoryService.getCategoryByNameAndUserId(categoryName.trim(), userId);
         if (category == null) {
             category = new Category();
-            category.setName(categoryName);
+            category.setName(categoryName.trim());
+            category.setIExpense(false);
+            category.setUser(new User());
+            category.getUser().setId(userId);
             category = categoryService.create(category);
         }
         return category;

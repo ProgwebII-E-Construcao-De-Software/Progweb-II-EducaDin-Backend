@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
@@ -28,23 +29,39 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToCreate(Income newModel) {
-        if (Objects.nonNull(newModel.getUser())) {
-            if (newModel.getCategory() != null) {
-                Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
-                if (category == null) {
-                    category = categoryService.create(newModel.getCategory());
-                }
-                newModel.setCategory(category);
-            }
-            if (Objects.isNull(newModel.getRepeatable())) {
-                newModel.setRepeatable(Repeatable.DONT_REPEATS);
-            }
-            User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-            if (user != null) {
-                newModel.setUser(user);
-            }
-            createFutureIncomes(newModel);
+        getUser(newModel);
+        getCategory(newModel);
+        if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
+            newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            newModel.setLeadTime(0);
         }
+        threatStrings(newModel);
+        createFutureIncomes(newModel);
+    }
+
+    private static void threatStrings(Income newModel) {
+        newModel.setDescription(newModel.getDescription().trim());
+        newModel.setName(newModel.getName().trim());
+    }
+
+    private void getCategory(Income newModel) {
+        Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName().trim(), newModel.getUser().getId());
+        if(Objects.isNull(category)){
+            newModel.getCategory().setName(newModel.getCategory().getName().trim());
+            category = categoryService.create(newModel.getCategory());
+            category.setUser(newModel.getUser());
+            category.setIExpense(false);
+            newModel.setCategory(category);
+        }
+
+    }
+
+    private void getUser(Income newModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if(Objects.isNull(user)){
+            throw new InvalidParameterException("user", "Usuário não encontrado.");
+        }
+        newModel.setUser(user);
     }
 
 
@@ -53,7 +70,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "LeadTime must be higher than -1: ");
+            throw new InvalidParameterException("income",  "LeadTime must be higher than -1: ");
         }
     }
 
@@ -73,7 +90,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
             if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
                 && !Objects.equals(similarModel.getId(), newModel.getId())){
-                throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                throw new InvalidParameterException("income", 
                        "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
             }
         }
@@ -81,18 +98,13 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToUpdate(Income newModel, Income model) {
-        if (newModel.getCategory() != null) {
-            Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
-            if (category == null) {
-                category = categoryService.create(newModel.getCategory());
-            }
-            newModel.setCategory(category);
+        getUser(newModel);
+        getCategory(newModel);
+        threatStrings(newModel);
+        if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
+            newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            newModel.setLeadTime(0);
         }
-        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-        if (user != null) {
-            newModel.setUser(user);
-        }
-
         if (newModel.getRepeatable() != Repeatable.DONT_REPEATS || !newModel.getIncomeDate().equals(model.getIncomeDate())) {
             repository.deleteByNameAndUserAndCategoryAndIncomeDateAfter(
                     model.getName(),
@@ -115,15 +127,15 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     protected void validateBusinessLogic(Income model) {
         if(Objects.isNull(model)){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("income",  "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("income", "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
         if(Objects.isNull(model.getUser()))
         {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Missing user");
+            throw new InvalidParameterException("income", "Missing user");
         }
 
     }

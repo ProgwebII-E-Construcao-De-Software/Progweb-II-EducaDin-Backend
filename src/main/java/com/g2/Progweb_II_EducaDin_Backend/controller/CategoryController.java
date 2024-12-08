@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,17 +36,23 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/incomes")
+    @GetMapping("/incomes/{id}")
     @Operation(description = "End point para listar todas as categorias de receitas")
-    public ResponseEntity<List<CategoryDTO>> getIncomeCategories() {
-        List<CategoryDTO> incomeCategories = categoryService.getCategoriesByIExpense(false);
+    public ResponseEntity<List<CategoryDTO>> getIncomeCategories(
+            @Parameter(description = "Id do usuario")
+            @PathVariable("id") Long id
+    ){
+        List<CategoryDTO> incomeCategories = categoryService.getCategoriesByIExpenseAndUserId(false, id);
         return ResponseEntity.ok(incomeCategories);
     }
 
-    @GetMapping("/expenses")
+    @GetMapping("/expenses/{id}")
     @Operation(description = "End point para listar todas as categorias de despesas")
-    public ResponseEntity<List<CategoryDTO>> getExpenseCategories() {
-        List<CategoryDTO> expenseCategories = categoryService.getCategoriesByIExpense(true);
+    public ResponseEntity<List<CategoryDTO>> getExpenseCategories(
+            @Parameter(description = "Id do usuario")
+            @PathVariable("id") Long id
+    ) {
+        List<CategoryDTO> expenseCategories = categoryService.getCategoriesByIExpenseAndUserId(true, id);
         return ResponseEntity.ok(expenseCategories);
     }
 

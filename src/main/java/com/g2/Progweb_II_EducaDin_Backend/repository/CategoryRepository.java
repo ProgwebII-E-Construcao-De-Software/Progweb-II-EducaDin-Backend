@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    boolean existsByName(String name);
-    List<Category> findByIExpense(boolean IExpense);
-    Category findByNameEqualsIgnoreCase(String name);
+    boolean existsByNameAndUserId(final String name, Long userId);
+    List<Category> findByIExpenseAndUserId(boolean iExpense, Long userId);
+    Category findByNameEqualsIgnoreCaseAndUserId(final String name, Long userId);
     List<Category> findAllByUserId(long userId);
 }

@@ -41,6 +41,8 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
             newUser.setRoles(getDefaultRoles());
             existingUser.setRoles(getDefaultRoles());
         }
+        newUser.setActiveState(true);
+        existingUser.setActiveState(true);
     }
 
     @Override

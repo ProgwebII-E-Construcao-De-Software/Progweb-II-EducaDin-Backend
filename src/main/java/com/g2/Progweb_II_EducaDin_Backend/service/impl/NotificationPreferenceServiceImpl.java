@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
@@ -34,7 +35,7 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     protected void validateBusinessLogicToCreate(NotificationPreference newModel) {
         validateBusinessLogic(newModel);
         if (repository.existsByUserIdAndType(newModel.getUser().getId(), newModel.getType())) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "A preference for this type already exists for the user.");
+            throw new InvalidParameterException("notification", "A preference for this type already exists for the user.");
         }
     }
 
@@ -53,25 +54,25 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     @Override
     protected void validateBusinessLogicToUpdate(NotificationPreference model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException( ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Model is null.");
+            throw new InvalidParameterException("notification",  "Model is null.");
         }
         if (Objects.isNull(model.getEnabled())) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Enabled field cannot be null.");
+            throw new InvalidParameterException("enabled",  "Enabled field cannot be null.");
         }
     }
 
     @Override
     protected void validateBusinessLogic(NotificationPreference model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+            throw new InvalidParameterException("notification",
                     "Model is null." );
         }
         if (Objects.isNull(model.getUser().getId())) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+            throw new InvalidParameterException("id",
                     "User ID cannot be null.");
         }
         if (Objects.isNull(model.getType()) || model.getType().isEmpty()) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+            throw new InvalidParameterException("type",
                     "Notification type cannot be null or empty.");
         }
     }

@@ -28,22 +28,23 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
     private UserRepository userRepository;
 
     @Override
-    public boolean existsByName(String name) {
-        return categoryRepository.existsByName(name);
+    public boolean existsByNameAndUserId(String name, Long id) {
+        return categoryRepository.existsByNameAndUserId(name, id);
     }
 
     @Override
-    public List<CategoryDTO> getCategoriesByIExpense(boolean IExpense) {
-        List<Category> categories = categoryRepository.findByIExpense(IExpense);
+    public List<CategoryDTO> getCategoriesByIExpenseAndUserId(boolean IExpense, Long id) {
+        List<Category> categories = categoryRepository.findByIExpenseAndUserId(IExpense, id);
         return categories.stream()
                 .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Category getCategoryByName(String name) {
-        return repository.findByNameEqualsIgnoreCase(name);
+    public Category getCategoryByNameAndUserId(String name, Long id) {
+        return repository.findByNameEqualsIgnoreCaseAndUserId(name, id);
     }
+
 
     @Override
     protected void prepareToCreate(Category category) {

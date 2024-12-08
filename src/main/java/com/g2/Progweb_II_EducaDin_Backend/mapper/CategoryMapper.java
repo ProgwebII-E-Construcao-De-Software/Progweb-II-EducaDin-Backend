@@ -1,12 +1,8 @@
 package com.g2.Progweb_II_EducaDin_Backend.mapper;
 
-import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
-import com.g2.Progweb_II_EducaDin_Backend.model.dto.CategoryDTO;
-import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import br.ueg.progweb2.arquitetura.mapper.GenericMapper;
-import com.g2.Progweb_II_EducaDin_Backend.model.dto.ExpenseDTO;
-import com.g2.Progweb_II_EducaDin_Backend.model.dto.ExpenseDTOCreateUpdate;
-import com.g2.Progweb_II_EducaDin_Backend.model.dto.ExpenseListDTO;
+import com.g2.Progweb_II_EducaDin_Backend.model.Category;
+import com.g2.Progweb_II_EducaDin_Backend.model.dto.CategoryDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

@@ -1,6 +1,7 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
@@ -28,23 +29,33 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
 
     @Override
     protected void prepareToCreate(Expense newModel) {
-        if (Objects.nonNull(newModel.getUser())) {
-            if (newModel.getCategory() != null) {
-                Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
-                if (category == null) {
-                    category = categoryService.create(newModel.getCategory());
-                }
-                newModel.setCategory(category);
-            }
-            if (Objects.isNull(newModel.getRepeatable())) {
-                newModel.setRepeatable(Repeatable.DONT_REPEATS);
-            }
-            User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-            if (user != null) {
-                newModel.setUser(user);
-            }
-            createFutureExpenses(newModel);
+        getUser(newModel);
+        getCategory(newModel);
+        if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
+            newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            newModel.setLeadTime(0);
         }
+        threatStrings(newModel);
+        createFutureExpenses(newModel);
+    }
+
+    private void getCategory(Expense newModel) {
+        Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName(), newModel.getUser().getId());
+        if(Objects.isNull(category)){
+            category = categoryService.create(newModel.getCategory());
+            category.setUser(newModel.getUser());
+            category.setIExpense(false);
+            newModel.setCategory(category);
+        }
+
+    }
+
+    private void getUser(Expense newModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if(Objects.isNull(user)){
+            throw new InvalidParameterException("user", "Usuário não encontrado.");
+        }
+        newModel.setUser(user);
     }
 
 
@@ -53,7 +64,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "LeadTime must be higher than -1: ");
+            throw new InvalidParameterException("expense",  "LeadTime must be higher than -1: ");
         }
     }
 
@@ -73,7 +84,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
 
             if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
                     && !Objects.equals(similarModel.getId(), newModel.getId())){
-                throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                throw new InvalidParameterException("expense",
                         "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
             }
         }
@@ -81,18 +92,12 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
 
     @Override
     protected void prepareToUpdate(Expense newModel, Expense model) {
-        if (newModel.getCategory() != null) {
-            Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
-            if (category == null) {
-                category = categoryService.create(newModel.getCategory());
-            }
-            newModel.setCategory(category);
+        getUser(newModel);
+        getCategory(newModel);
+        if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
+            newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            newModel.setLeadTime(0);
         }
-        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-        if (user != null) {
-            newModel.setUser(user);
-        }
-
         if (newModel.getRepeatable() != Repeatable.DONT_REPEATS || !newModel.getExpenseDate().equals(model.getExpenseDate())) {
             repository.deleteByNameAndUserAndCategoryAndExpenseDateAfter(
                     model.getName(),
@@ -100,10 +105,15 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
                     model.getCategory(),
                     model.getExpenseDate()
             );
+            threatStrings(newModel);
             createFutureExpenses(newModel);
         }
     }
 
+    private static void threatStrings(Expense newModel) {
+        newModel.setDescription(newModel.getDescription().trim());
+        newModel.setName(newModel.getName().trim());
+    }
 
     @Override
     protected void validateBusinessLogicToUpdate(Expense model) {
@@ -115,15 +125,15 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
     @Override
     protected void validateBusinessLogic(Expense model) {
         if(Objects.isNull(model)){
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("expense",  "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("expense", "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
         }
         if(Objects.isNull(model.getUser()))
         {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Missing user");
+            throw new InvalidParameterException("expense", "Missing user");
         }
 
     }
