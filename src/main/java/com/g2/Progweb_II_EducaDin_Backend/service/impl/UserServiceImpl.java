@@ -8,6 +8,7 @@ import com.g2.Progweb_II_EducaDin_Backend.model.Login;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -143,5 +144,15 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
     @Override
     public User getUserByLogin(String username) {
         return repository.findByLogin(username);
+    }
+
+    @Override
+    public void updateUserEmail(Long userId, String newEmail) {
+        User user = repository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com esse ID não foi encontrado"));
+
+        user.setEmail(newEmail);
+
+        repository.save(user);
     }
 }

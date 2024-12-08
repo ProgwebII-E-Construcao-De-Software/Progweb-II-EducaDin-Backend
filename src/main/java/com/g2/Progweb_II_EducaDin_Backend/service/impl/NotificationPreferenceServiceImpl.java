@@ -87,6 +87,20 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     }
 
     @Override
+    public void updateNotificationPreference(Long userId, String type, boolean isEnabled) {
+
+        NotificationPreference preference = repository.findByUserIdAndType(userId, type)
+                .orElseThrow(() -> new BusinessException(
+                        ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                        "Preferência de notificação não encontrada para o ID do usuário e tipo: " + type
+                ));
+
+        preference.setEnabled(isEnabled);
+
+        repository.save(preference);
+    }
+
+    @Override
     public boolean isNotificationTypeEnabled(Long userId, String type) {
         return repository.existsByUserIdAndType(userId, type);
     }
