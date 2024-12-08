@@ -11,25 +11,88 @@ import com.g2.Progweb_II_EducaDin_Backend.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UserServiceImpl extends GenericCrudService<User, Long, UserRepository> implements UserService {
 
-
-
-
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    protected void prepareToCreate(User dado) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    protected void prepareToCreate(User user) {
+        String rawPassword = user.getLoginEnt().getPassword();
+        user.setLoginEnt(new Login());
+        user.getLoginEnt().setUser(user);
+        user.getLoginEnt().setPassword(encodePassword(rawPassword));
+        user.setRoles(getDefaultRoles());
+        user.setActiveState(true);
+    }
 
-        var key =  dado.getLoginEnt().getPassword();
-        dado.setLoginEnt(new Login());
-        dado.getLoginEnt().setUser(dado);
-        dado.getLoginEnt().setPassword(bCryptPasswordEncoder.encode(key));
-        dado.setRoles(Arrays.asList(
+    @Override
+    protected void validateBusinessLogicToCreate(User user) {
+        validateEmail(user.getEmail());
+        validateUniqueUser(user);
+    }
+
+    @Override
+    protected void prepareToUpdate(User newUser, User existingUser) {
+        if(newUser.getRoles().isEmpty() || existingUser.getRoles().isEmpty()){
+            newUser.setRoles(getDefaultRoles());
+            existingUser.setRoles(getDefaultRoles());
+        }
+    }
+
+    @Override
+    protected void validateBusinessLogicToUpdate(User user) {
+        if (Objects.isNull(getUserByEmail(user.getEmail()))) {
+            throw new InvalidParameterException("email", "Usuário não encontrado.");
+        }
+        if (Objects.isNull(getUserByUserName(user.getLogin()))) {
+            throw new InvalidParameterException("login", "Usuário não encontrado.");
+        }
+    }
+
+    @Override
+    protected void validateBusinessLogic(User user) {
+        validateEmail(user.getEmail());
+    }
+
+    @Override
+    public User redefinePassword(AuthUserDTO authUserDTO) {
+        User user = getUser(authUserDTO);
+        user.getLoginEnt().setPassword(encodePassword(authUserDTO.getNewPassword()));
+        return repository.save(user);
+    }
+
+    private User getUser(AuthUserDTO authUserDTO) {
+        User user = repository.findByEmail(authUserDTO.getEmail());
+        if (Objects.isNull(user)) {
+            throw new InvalidParameterException("email", "Usuário não encontrado.");
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public User getUserByUserName(String username) {
+        return repository.findByLogin(username);
+    }
+
+    @Override
+    public User getUserByLogin(String username) {
+        return repository.findByLogin(username);
+    }
+
+    private String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+    private List<String> getDefaultRoles() {
+        return List.of(
                 "ROLE_INCOME_REMOVEALL",
                 "ROLE_INCOME_CREATE",
                 "ROLE_INCOME_READ",
@@ -59,89 +122,26 @@ public class UserServiceImpl extends GenericCrudService<User, Long, UserReposito
                 "ROLE_NOTIFICATION_READ",
                 "ROLE_NOTIFICATION_UPDATE",
                 "ROLE_NOTIFICATION_DELETE",
-                "ROLE_NOTIFICATION_READ_ALL",
                 "ROLE_NOTIFICATIONPREFERENCE_READ_ALL",
                 "ROLE_NOTIFICATIONPREFERENCE_CREATE",
                 "ROLE_NOTIFICATIONPREFERENCE_READ",
                 "ROLE_NOTIFICATIONPREFERENCE_UPDATE",
-                "ROLE_NOTIFICATIONPREFERENCE_DELETE",
-                "ROLE_NOTIFICATIONPREFERENCE_READ_ALL"));
-        dado.setActiveState(true);
-
+                "ROLE_NOTIFICATIONPREFERENCE_DELETE"
+        );
     }
 
-    @Override
-    protected void validateBusinessLogicToCreate(User dado) {
-        if(!Util.isValidEmail(dado.getEmail())){
-            throw new InvalidParameterException("email", "O email é inválido");
-        }
-        if(Objects.nonNull(getUserByEmail(dado.getEmail()))){
-            throw new InvalidParameterException("", "Email ou senha inválidos");
-        }
-        if(Objects.nonNull(getUserByUserName(dado.getLogin()))){
-            throw new InvalidParameterException("login", "Login em uso");
+    private void validateEmail(String email) {
+        if (!Util.isValidEmail(email)) {
+            throw new InvalidParameterException("email", "O e-mail informado é inválido.");
         }
     }
 
-    @Override
-    protected void prepareToUpdate(User newModel, User model) {
-        newModel.setRoles(Arrays.asList(
-                "ROLE_INCOME_REMOVEALL",
-                "ROLE_INCOME_CREATE",
-                "ROLE_INCOME_READ",
-                "ROLE_INCOME_UPDATE",
-                "ROLE_INCOME_DELETE",
-                "ROLE_INCOME_READ_ALL",
-                "ROLE_EXPENSE_REMOVEALL",
-                "ROLE_EXPENSE_CREATE",
-                "ROLE_EXPENSE_READ",
-                "ROLE_EXPENSE_UPDATE",
-                "ROLE_EXPENSE_DELETE",
-                "ROLE_EXPENSE_READ_ALL",
-                "ROLE_GOAL_REMOVEALL",
-                "ROLE_GOAL_CREATE",
-                "ROLE_GOAL_READ",
-                "ROLE_GOAL_UPDATE",
-                "ROLE_GOAL_DELETE",
-                "ROLE_GOAL_READ_ALL"
-        ));
-    }
-
-    @Override
-    protected void validateBusinessLogicToUpdate(User dado) {
-        if(Objects.isNull(getUserByEmail(dado.getEmail()))){
-            throw new InvalidParameterException("", "Usuário não encontrado");
+    private void validateUniqueUser(User user) {
+        if (Objects.nonNull(getUserByEmail(user.getEmail()))) {
+            throw new InvalidParameterException("email", "E-mail já cadastrado.");
         }
-        if(Objects.isNull(getUserByUserName(dado.getLogin()))){
-            throw new InvalidParameterException("", "Usuário não encontrado");
+        if (Objects.nonNull(getUserByUserName(user.getLogin()))) {
+            throw new InvalidParameterException("login", "Login já em uso.");
         }
-    }
-
-    @Override
-    protected void validateBusinessLogic(User dado) {
-
-    }
-
-    @Override
-    public User redefinePassword(AuthUserDTO authUserDTO) {
-        User user = repository.findByEmail(authUserDTO.getEmail());
-        validateBusinessLogicToUpdate(user);
-        user.getLoginEnt().setPassword(authUserDTO.getNewPassword());
-        return update(user);
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        return repository.findByEmail(email);
-    }
-
-    @Override
-    public User getUserByUserName(String username) {
-        return repository.findByLogin(username);
-    }
-
-    @Override
-    public User getUserByLogin(String username) {
-        return repository.findByLogin(username);
     }
 }
