@@ -10,6 +10,7 @@ import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.GoalService;
+import com.g2.Progweb_II_EducaDin_Backend.service.NotificationService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,11 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    NotificationService notificationService;
+
+
 
     @Override
     protected void prepareToCreate(Goal newModel) {

@@ -5,10 +5,7 @@ import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
-import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
-import com.g2.Progweb_II_EducaDin_Backend.model.Income;
-import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
-import com.g2.Progweb_II_EducaDin_Backend.model.User;
+import com.g2.Progweb_II_EducaDin_Backend.model.*;
 import com.g2.Progweb_II_EducaDin_Backend.repository.IncomeRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
@@ -31,25 +28,25 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToCreate(Income newModel) {
-        if(Objects.nonNull(newModel.getUser())){
-        String name = newModel.getCategory().getName();
-        newModel.getCategory().setUser(newModel.getUser());
-        if(categoryService.existsByName(name)){
-            newModel.setCategory(categoryService.create(categoryService.getCategoryByName(name)));
-        }
-        else{
-            newModel.setCategory(categoryService.create(newModel.getCategory()));
-        }
-        if(Objects.isNull(newModel.getRepeatable())){
-            newModel.setRepeatable(Repeatable.DONT_REPEATS);
+        if (Objects.nonNull(newModel.getUser())) {
+            if (newModel.getCategory() != null) {
+                Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
+                if (category == null) {
+                    category = categoryService.create(newModel.getCategory());
+                }
+                newModel.setCategory(category);
+            }
+            if (Objects.isNull(newModel.getRepeatable())) {
+                newModel.setRepeatable(Repeatable.DONT_REPEATS);
+            }
             User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
             if (user != null) {
                 newModel.setUser(user);
-                createFutureIncomes(newModel);
             }
-        }
+            createFutureIncomes(newModel);
         }
     }
+
 
     @Override
     protected void validateBusinessLogicToCreate(Income newModel) {
@@ -84,12 +81,12 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     protected void prepareToUpdate(Income newModel, Income model) {
-        String name = newModel.getCategory().getName();
-        if(categoryService.existsByName(name)){
-            newModel.setCategory(categoryService.create(categoryService.getCategoryByName(name)));
-        }
-        else{
-            newModel.setCategory(categoryService.create(newModel.getCategory()));
+        if (newModel.getCategory() != null) {
+            Category category = categoryService.getCategoryByName(newModel.getCategory().getName());
+            if (category == null) {
+                category = categoryService.create(newModel.getCategory());
+            }
+            newModel.setCategory(category);
         }
         User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
         if (user != null) {
@@ -107,6 +104,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         }
     }
 
+
     @Override
     protected void validateBusinessLogicToUpdate(Income model) {
         validateBusinessLogic(model);
@@ -122,6 +120,10 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+        }
+        if(Objects.isNull(model.getUser()))
+        {
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,"Missing user");
         }
 
     }
@@ -179,14 +181,8 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     public Income deleteById(Long id) {
         Income model = validateId(id);
-        if (Objects.nonNull(model)) {
-            repository.deleteByNameAndUserAndCategoryAndIncomeDateAfter(
-                    model.getName(), model.getUser(), model.getCategory(), model.getIncomeDate()
-            );
             repository.deleteById(id);
             return model;
-        }
-        return null;
     }
 
 }

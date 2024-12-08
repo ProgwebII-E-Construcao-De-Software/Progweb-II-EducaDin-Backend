@@ -3,32 +3,49 @@ package com.g2.Progweb_II_EducaDin_Backend.enums;
 import br.ueg.progweb2.arquitetura.exceptions.MessageCode;
 import lombok.Getter;
 
-@Getter
 public enum ErrorValidation implements MessageCode {
 
+    GENERAL( "MSG-100", 500),
+    INVALID_ID("MSG-101",400),
+    NOT_FOUND("MSG-102", 404),
+    MANDATORY_FIELD_VIOLATION("ME004", 400),
+    USER_ALREADY_EXISTS("MSG-104", 405),
+    BUSINESS_LOGIC_VIOLATION("MSG-105", 407);
 
-    GENERAL(500, "Undefined error!"),
-    INVALID_ID(400, "Invalid Id!"),
-    NOT_FOUND(404, "Not found!"),
-    MANDATORY_FIELD_VIOLATION(400, "Mandatory field must be filled up!"),
-    USER_ALREADY_EXISTS(405,"User already exists"),
-    BUSINESS_LOGIC_VIOLATION(407,"Business logic violation!");
+    private final String code;
 
-    private Integer code;
-    private String message;
+    private final Integer status;
 
-    ErrorValidation( Integer code, String message){
+    /**
+     * Construtor da classe.
+     *
+     * @param code -
+     * @param status -
+     */
+    ErrorValidation(final String code, final Integer status) {
         this.code = code;
-        this.message = message;
+        this.status = status;
     }
 
-    @Override
-    public Integer getStatus() {
-        return this.code;
-    }
-
-    @Override
+    /**
+     * @return the code
+     */
     public String getCode() {
-        return this.message;
+        return code;
+    }
+
+    /**
+     * @return the status
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * @see Enum#toString()
+     */
+    @Override
+    public String toString() {
+        return code;
     }
 }

@@ -25,10 +25,13 @@ public class Expense implements GenericModel<Long>, ISearchFieldData<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    @Searchable(label = "id", autoComplete = true )
     private Long id;
 
     @ManyToOne
     @JoinColumn(name="categoty_id")
+
     private Category category;
 
     @MandatoryField(type = "String", name = "Name")
@@ -62,7 +65,7 @@ public class Expense implements GenericModel<Long>, ISearchFieldData<Long> {
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Override

@@ -47,43 +47,48 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Override
     protected void prepareToCreate(Category category) {
-        if(Objects.nonNull(category.getUser())){
+        if (category.getUser() != null) {
             User user = userRepository.findById(category.getUser().getId()).orElse(null);
             if (user != null) {
                 category.setUser(user);
             }
         }
-
-
     }
 
     @Override
     protected void validateBusinessLogicToCreate(Category newModel) {
-
-    }
-
-
-    @Override
-    protected void prepareToUpdate(Category newModel, Category model) {
-        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-        if (user != null) {
-            newModel.setUser(user);
+        if (newModel.getName() == null || newModel.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome da categoria é obrigatório.");
         }
     }
 
     @Override
-    protected void validateBusinessLogicToUpdate(Category model) {
+    protected void prepareToUpdate(Category newModel, Category model) {
+        newModel = model;
+    }
+    @Override
+    public Category update(Category dataToUpdate){
+        dataToUpdate = repository.findById(dataToUpdate.getId()).orElse(null);
+        return dataToUpdate;
 
+    }
+    @Override
+    protected void validateBusinessLogicToUpdate(Category model) {
+        if (model.getName() == null || model.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome da categoria é obrigatório.");
+        }
     }
 
     @Override
     protected void validateBusinessLogic(Category data) {
-
+        if (data.getName() == null || data.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome da categoria é obrigatório.");
+        }
     }
 
     @Override
     public List<Category> listAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
@@ -93,6 +98,10 @@ public class CategoryServiceImpl extends GenericCrudService<Category, Long, Cate
 
     @Override
     public Category deleteById(Long id) {
-        return null;
+        Category category = repository.findById(id).orElse(null);
+        if (category != null) {
+            repository.delete(category);
+        }
+        return category;
     }
 }

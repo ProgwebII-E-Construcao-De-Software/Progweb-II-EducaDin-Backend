@@ -1,40 +1,56 @@
 package com.g2.Progweb_II_EducaDin_Backend.mapper;
 
 import br.ueg.progweb2.arquitetura.mapper.GenericMapper;
+import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTO;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeDTOCreateUpdate;
 import com.g2.Progweb_II_EducaDin_Backend.model.dto.IncomeListDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class, UserMapper.class})
-public interface IncomeMapper extends GenericMapper<IncomeDTO, IncomeDTOCreateUpdate, IncomeDTOCreateUpdate, IncomeListDTO, Income, Long> {
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
+public abstract class IncomeMapper implements GenericMapper<IncomeDTO, IncomeDTOCreateUpdate, IncomeDTOCreateUpdate, IncomeListDTO, Income, Long> {
 
-    @Mapping(source = "categoryName", target = "category.name")
+    @Autowired
+    private CategoryService categoryService;
+
+    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
     @Mapping(target = "user.id", source = "userId")
-    Income toModel(IncomeDTOCreateUpdate dto);
+    public abstract Income toModel(IncomeDTOCreateUpdate dto);
 
     @Override
-    @Mapping(source = "categoryName", target = "category.name")
+    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
     @Mapping(target = "user.id", source = "userId")
-    Income fromModelCreatedToModel(IncomeDTOCreateUpdate dto);
+    public abstract Income fromModelCreatedToModel(IncomeDTOCreateUpdate dto);
 
     @Override
     @Mapping(source = "category.name", target = "categoryName")
     @Mapping(target = "userId", source = "user.id")
-    IncomeDTO toDTO(Income model);
+    public abstract IncomeDTO toDTO(Income model);
 
     @Override
-    @Named(value = "toDTOList")
+    @Named("toDTOList")
     @Mapping(target = "userId", source = "user.id")
-    IncomeListDTO toDTOList(Income model);
+    public abstract IncomeListDTO toDTOList(Income model);
 
     @Override
-    @Mapping(source = "categoryName", target = "category.name")
+    @Mapping(source = "categoryName", target = "category", qualifiedByName = "resolveCategoryByName")
     @Mapping(target = "user.id", source = "userId")
-    Income fromModelUpdatedToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
+    public abstract Income fromModelUpdatedToModel(IncomeDTOCreateUpdate incomeDTOCreateUpdate);
 
-
+    @Named("resolveCategoryByName")
+    protected Category resolveCategoryByName(String categoryName) {
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            return null;
+        }
+        Category category = categoryService.getCategoryByName(categoryName);
+        if (category == null) {
+            category = new Category();
+            category.setName(categoryName);
+            category = categoryService.create(category);
+        }
+        return category;
+    }
 }
