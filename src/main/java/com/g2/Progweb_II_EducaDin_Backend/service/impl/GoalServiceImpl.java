@@ -61,11 +61,30 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     }
 
     @Override
-    protected void prepareToUpdate(Goal newModel, Goal model) {
-        newModel.setName(Strings.toRootUpperCase(newModel.getName()));
-        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
-        if (user != null) {
-            newModel.setUser(user);
+    protected void prepareToUpdate(Goal newModel, Goal existingModel) {
+        User owner = existingModel.getUser();
+        if (owner == null) {
+            throw new BusinessException(ErrorValidation.NOT_FOUND, "Owner not found");
+        }
+
+        User userEditing = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (userEditing == null) {
+            throw new BusinessException(ErrorValidation.NOT_FOUND, "User performing the update not found.");
+        }
+        if (userEditing.getId().equals(owner.getId())) {
+            newModel.setName(Strings.toRootUpperCase(newModel.getName()));
+            existingModel.setAmountTotal(newModel.getAmountTotal());
+            existingModel.setGoalDate(newModel.getGoalDate());
+        } else if (existingModel.getSharedWith().contains(userEditing.getId())) {
+            if (!newModel.getAmountReached().equals(existingModel.getAmountReached())) {
+                existingModel.setAmountReached(newModel.getAmountReached());
+            } else {
+                throw new BusinessException(ErrorValidation.UNAUTHORIZED_OPERATION,
+                        "Shared users can only update the amount reached.");
+            }
+        } else {
+            throw new BusinessException(ErrorValidation.UNAUTHORIZED_OPERATION,
+                    "User does not have permission to update this goal.");
         }
     }
 

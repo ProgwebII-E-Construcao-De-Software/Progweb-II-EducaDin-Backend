@@ -10,7 +10,8 @@ public enum ErrorValidation implements MessageCode {
     NOT_FOUND("MSG-102", 404),
     MANDATORY_FIELD_VIOLATION("ME004", 400),
     USER_ALREADY_EXISTS("MSG-104", 405),
-    BUSINESS_LOGIC_VIOLATION("MSG-105", 407);
+    BUSINESS_LOGIC_VIOLATION("MSG-105", 407),
+    UNAUTHORIZED_OPERATION("msg-106", 400);
 
     private final String code;
 
