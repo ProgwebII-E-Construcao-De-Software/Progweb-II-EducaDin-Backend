@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface GoalService extends CrudService<Goal, Long> {
     List<Goal> listAll(Long userId);
+    List<Goal> getGoalsByOwnerOrSharedWith(Long userId);
 }
