@@ -7,6 +7,7 @@ import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface GoalRepository extends JpaRepository<Goal, Long> , JpaSpecifica
      * @return Lista de metas.
      */
     @Query("SELECT g FROM Goal g " +
-            "WHERE g.owner.id = :userId " +
-            "   OR :userId IN (SELECT sharedUser.id FROM g.sharedUsers sharedUser)")
-    List<Goal> findGoalsByOwnerOrSharedWith(Long userId);
+            "WHERE g.user.id = :userId " + // Metas cujo proprietário é o usuário
+            "   OR :userId IN elements(g.sharedWith)") // Metas compartilhadas com o usuário
+    List<Goal> findGoalsByOwnerOrSharedWith(@Param("userId") Long userId);
 }
