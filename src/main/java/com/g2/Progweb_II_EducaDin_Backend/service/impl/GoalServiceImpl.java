@@ -90,7 +90,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
 
     @Override
     protected void validateBusinessLogicToUpdate(Goal model) {
-        validateBusinessLogic(model);
+        validateBusinessLogicToUpdate(model);
         if (model.getAmountReached() < 0.0 || model.getAmountReached() > model.getAmountTotal()) {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 1.0 and lower than total amount");
         }
