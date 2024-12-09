@@ -52,6 +52,12 @@ public class Goal implements GenericModel<Long>, ISearchFieldData<Long> {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @MandatoryField(type = "List<Long>", name = "SharedWith")
+    @ElementCollection
+    @CollectionTable(name = "goal_shared_with", joinColumns = @JoinColumn(name = "goal_id"))
+    @Column(name = "user_id")
+    private List<Long> sharedWith;
+
     @Override
     public String toString(){
         return String.format("""
