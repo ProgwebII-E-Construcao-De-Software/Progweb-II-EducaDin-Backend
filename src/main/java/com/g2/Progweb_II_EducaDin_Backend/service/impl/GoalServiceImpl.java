@@ -25,6 +25,9 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     private UserRepository userRepository;
 
     @Autowired
+    private GoalRepository goalRepository;
+
+    @Autowired
     NotificationService notificationService;
 
 
@@ -133,6 +136,9 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
         return goalOptional.orElse(null);
     }
 
-
+    @Override
+    public List<Goal> getGoalsByOwnerOrSharedWith(Long userId) {
+        return goalRepository.findGoalsByOwnerOrSharedWith(userId);
+    }
 
 }
