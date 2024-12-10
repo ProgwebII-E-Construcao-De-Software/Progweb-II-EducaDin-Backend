@@ -2,7 +2,9 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
+import br.ueg.progweb2.arquitetura.model.dtos.SearchFieldValue;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
+import br.ueg.progweb2.arquitetura.repository.model.SearchType;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
@@ -12,12 +14,15 @@ import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
 import com.g2.Progweb_II_EducaDin_Backend.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, ExpenseRepository> implements ExpenseService {
@@ -38,6 +43,12 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         threatStrings(newModel);
         createFutureExpenses(newModel);
     }
+
+    @Override
+    public Page<Expense> listAllByIdPage(Long id, Pageable page) {
+        return repository.findByUserId(id, page);
+    }
+
 
     private void getCategory(Expense newModel) {
         Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName(), newModel.getUser().getId());
@@ -78,7 +89,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
      * @throws BusinessException ErrorValidation.GENERAL
      */
     private void validateAmbiguous(Expense newModel) {
-        List<Expense> similarModels = repository.findAllByName(newModel.getName());
+        List<Expense> similarModels = repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId());
 
         for(Expense similarModel : similarModels){
 

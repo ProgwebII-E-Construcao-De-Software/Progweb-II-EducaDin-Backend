@@ -3,6 +3,7 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
+import br.ueg.progweb2.arquitetura.service.AuthClaimResolve;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
@@ -12,6 +13,8 @@ import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.CategoryService;
 import com.g2.Progweb_II_EducaDin_Backend.service.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -84,7 +87,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
      * @throws BusinessException ErrorValidation.GENERAL
      */
     private void validateAmbiguous(Income newModel) {
-        List<Income> similarModels = repository.findAllByName(newModel.getName());
+        List<Income> similarModels = repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId());
 
         for(Income similarModel : similarModels){
 
@@ -148,6 +151,11 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     public List<Income> listAll(Long userId) {
         return repository.findAllByUserId(userId);
+    }
+
+    @Override
+    public Page<Income> listAllByIdPage(Long id, Pageable page) {
+        return repository.findByUserId(id, page);
     }
 
     public List<Income> listAllContemporaneous(Long userId) {

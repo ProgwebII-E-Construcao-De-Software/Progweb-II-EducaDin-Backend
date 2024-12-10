@@ -5,6 +5,7 @@ import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import com.g2.Progweb_II_EducaDin_Backend.mapper.UserMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
+import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
@@ -13,6 +14,8 @@ import com.g2.Progweb_II_EducaDin_Backend.service.GoalService;
 import com.g2.Progweb_II_EducaDin_Backend.service.NotificationService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -54,7 +57,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
      * @throws BusinessException ErrorValidation.GENERAL
      */
     private void validateAmbiguous(Goal newModel) {
-        Optional<Goal> similarModel = Optional.ofNullable(repository.findByNameEqualsIgnoreCase(newModel.getName()));
+        Optional<Goal> similarModel = Optional.ofNullable(repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId()));
         if (similarModel.isPresent() && !Objects.equals(newModel.getId(), similarModel.get().getId())) {
             throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Entitys are too similar : \nmodelPosted : " + newModel + " \nsimilarModel: " + similarModel);
         }
@@ -92,6 +95,11 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     @Override
     public List<Goal> listAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Page<Goal> listAllByIdPage(Long id, Pageable page) {
+        return repository.findByUserId(id, page);
     }
 
     @Override

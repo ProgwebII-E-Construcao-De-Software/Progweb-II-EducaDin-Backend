@@ -2,8 +2,9 @@ package com.g2.Progweb_II_EducaDin_Backend.repository;
 
 import com.g2.Progweb_II_EducaDin_Backend.model.Category;
 import com.g2.Progweb_II_EducaDin_Backend.model.Expense;
-import com.g2.Progweb_II_EducaDin_Backend.model.Income;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,8 +21,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
 
     List<Expense> findAllByUserId(long userId);
 
-    @Query("SELECT i FROM Income i WHERE i.name = :name AND i.user = :user AND i.category = :category AND i.incomeDate > :date")
-    List<Income> findByNameAndUserAndCategoryAndIncomeDateAfter(
+    @Query("SELECT i FROM Expense i WHERE i.name = :name AND i.user = :user AND i.category = :category AND i.expenseDate > :date")
+    List<Expense> findByNameAndUserAndCategoryAndExpenseDateAfter(
             @Param("name") String name,
             @Param("user") User user,
             @Param("category") Category category,
@@ -40,4 +41,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
     List<Expense> findAllByExpenseDateBeforeOrExpenseDateEquals(LocalDate date, LocalDate date2);
 
     List<Expense> findAllByUserIdAndExpenseDateBefore(Long userId, LocalDate date);
+
+    Page<Expense> findByUserId(Long id, Pageable page);
+
+    List<Expense> findAllByNameIgnoreCaseAndUserId(String name, Long id);
+
 }
