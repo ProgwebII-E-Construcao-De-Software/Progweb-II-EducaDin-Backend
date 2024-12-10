@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "1.0/expenses")
+@RequestMapping(path = "${api.version}/expenses")
 @CrossOrigin()
 public class ExpenseController extends GenericCRUDController<
         ExpenseDTO,
@@ -40,7 +40,6 @@ public class ExpenseController extends GenericCRUDController<
         Long,
         ExpenseService,
         ExpenseMapper> {
-
 
     @PreAuthorize(value = "hasRole('ROLE_EXPENSE_READ')")
     @GetMapping(path = "/user/{id}",

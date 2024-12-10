@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/1.0/tips")
+@RequestMapping(path = "${api.version}/tips")
 @CrossOrigin
 public class TipController {
 

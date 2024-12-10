@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "1.0/notification-preferences")
+@RequestMapping(path = "${api.version}/notification-preferences")
 @CrossOrigin()
 public class NotificationPreferenceController extends GenericCRUDController<
         NotificationPreferenceDTO,
