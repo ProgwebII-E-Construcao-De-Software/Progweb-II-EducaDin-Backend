@@ -1,12 +1,9 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
+import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
-import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
-import com.g2.Progweb_II_EducaDin_Backend.mapper.UserMapper;
 import com.g2.Progweb_II_EducaDin_Backend.model.Goal;
-import com.g2.Progweb_II_EducaDin_Backend.model.Income;
-import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.GoalRepository;
 import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
@@ -18,8 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalRepository> implements GoalService {
@@ -59,7 +57,8 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     private void validateAmbiguous(Goal newModel) {
         Optional<Goal> similarModel = Optional.ofNullable(repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId()));
         if (similarModel.isPresent() && !Objects.equals(newModel.getId(), similarModel.get().getId())) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Entitys are too similar : \nmodelPosted : " + newModel + " \nsimilarModel: " + similarModel);
+            throw new InvalidParameterException("income",
+                    "Entidades muito similares encontradas : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
         }
     }
 
@@ -76,7 +75,7 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     protected void validateBusinessLogicToUpdate(Goal model) {
         validateBusinessLogic(model);
         if (model.getAmountReached() < 0.0 || model.getAmountReached() > model.getAmountTotal()) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount is invalid!: Must be higher than 1.0 and lower than total amount");
+            throw new InvalidParameterException("income", "Valor inválido!: Deve ser maior que ou igual a 0.0 e menor que o valor de da meta ");
         }
         validateAmbiguous(model);
     }
@@ -84,17 +83,17 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     @Override
     protected void validateBusinessLogic(Goal model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Model is null: ");
+            throw new InvalidParameterException("income", "Modelo é nulo");
         }
         if (model.getAmountTotal() <= 0.0 || model.getAmountTotal() >= 2147483647) {
-            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Amount Total is invalid!: Must be higher than 1.0 and lower than 2140000000 ");
+            throw new InvalidParameterException("income", "Valor inválido!: Deve ser maior que 0.0 e menor que  2140000000");
         }
 
     }
 
     @Override
     public List<Goal> listAll() {
-        return repository.findAll();
+        return null;
     }
 
     @Override

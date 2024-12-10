@@ -38,19 +38,19 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
             newModel.setLeadTime(0);
         }
-        threatStrings(newModel);
+        treatStrings(newModel);
         createFutureIncomes(newModel);
     }
 
-    private static void threatStrings(Income newModel) {
+    private static void treatStrings(Income newModel) {
         newModel.setDescription(newModel.getDescription().trim());
-        newModel.setName(newModel.getName().trim());
+        newModel.setName(newModel.getName().trim().toUpperCase());
     }
 
     private void getCategory(Income newModel) {
         Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName().trim(), newModel.getUser().getId());
         if(Objects.isNull(category)){
-            newModel.getCategory().setName(newModel.getCategory().getName().trim());
+            newModel.getCategory().setName(newModel.getCategory().getName().trim().toUpperCase());
             category = categoryService.create(newModel.getCategory());
             category.setUser(newModel.getUser());
             category.setIExpense(false);
@@ -73,7 +73,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new InvalidParameterException("income",  "LeadTime must be higher than -1: ");
+            throw new InvalidParameterException("income",  "A repetição deve ser maior que -1: ");
         }
     }
 
@@ -84,17 +84,16 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
      * similar im crucial attributes that make
      * them both invalids by the business logic
      *
-     * @throws BusinessException ErrorValidation.GENERAL
      */
     private void validateAmbiguous(Income newModel) {
         List<Income> similarModels = repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId());
 
         for(Income similarModel : similarModels){
 
-            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
+            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description", "name"})
                 && !Objects.equals(similarModel.getId(), newModel.getId())){
                 throw new InvalidParameterException("income", 
-                       "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
+                       "Entidades muito similares encontradas : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
             }
         }
     }
@@ -103,7 +102,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     protected void prepareToUpdate(Income newModel, Income model) {
         getUser(newModel);
         getCategory(newModel);
-        threatStrings(newModel);
+        treatStrings(newModel);
         if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
             newModel.setLeadTime(0);
@@ -130,36 +129,31 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
     @Override
     protected void validateBusinessLogic(Income model) {
         if(Objects.isNull(model)){
-            throw new InvalidParameterException("income",  "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("income",  "Entidade nula");
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new InvalidParameterException("income", "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("income", "Valor inválido!: Deve ser maior que 0.0 e menor que 14000000");
         }
         if(Objects.isNull(model.getUser()))
         {
-            throw new InvalidParameterException("income", "Missing user");
+            throw new InvalidParameterException("income", "Usuário não encontrado!");
         }
-
     }
 
     @Override
     public List<Income> listAll() {
-        return repository.findAllByIncomeDateBeforeOrIncomeDateEquals(LocalDate.now(), LocalDate.now());
+        return null;
     }
 
     @Override
     public List<Income> listAll(Long userId) {
-        return repository.findAllByUserId(userId);
+        return repository.findAllByUserIdAndIncomeDateBefore(userId, LocalDate.now().plusDays(1));
     }
 
     @Override
     public Page<Income> listAllByIdPage(Long id, Pageable page) {
-        return repository.findByUserId(id, page);
-    }
-
-    public List<Income> listAllContemporaneous(Long userId) {
-        return repository.findAllByUserIdAndIncomeDateBefore(userId, LocalDate.now().plusDays(1));
+        return repository.findByUserIdAndIncomeDateBefore(id, LocalDate.now().plusDays(1), page);
     }
 
     protected Income validateId(Long id) {
@@ -194,7 +188,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
             case WEEKLY -> currentDate.plusWeeks(1);
             case MONTHLY -> currentDate.plusMonths(1);
             case YEARLY -> currentDate.plusYears(1);
-            default -> throw new IllegalArgumentException("Unsupported Repeatable type: " + repeatable);
+            default -> throw new IllegalArgumentException("Tipo de repetição não suportada: " + repeatable);
         };
     }
 

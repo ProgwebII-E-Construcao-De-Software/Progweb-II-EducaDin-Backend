@@ -23,7 +23,7 @@ public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecif
     List<Income> findAllByIncomeDateBeforeOrIncomeDateEquals(LocalDate date, LocalDate date2);
     List<Income> findAllByUserIdAndIncomeDateBefore(Long userId, LocalDate date);
     Page<Income> findByUserId(Long id, Pageable pageable);
-
+    Page<Income> findByUserIdAndIncomeDateBefore(Long id, LocalDate date, Pageable pageable);
     @Query("SELECT i FROM Income i WHERE i.name = :name AND i.user = :user AND i.category = :category AND i.incomeDate > :date")
     List<Income> findByNameAndUserAndCategoryAndIncomeDateAfter(
             @Param("name") String name,

@@ -2,9 +2,8 @@ package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
 import br.ueg.progweb2.arquitetura.exceptions.InvalidParameterException;
-import br.ueg.progweb2.arquitetura.model.dtos.SearchFieldValue;
 import br.ueg.progweb2.arquitetura.reflection.ModelReflection;
-import br.ueg.progweb2.arquitetura.repository.model.SearchType;
+import br.ueg.progweb2.arquitetura.service.AuthClaimResolve;
 import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
 import com.g2.Progweb_II_EducaDin_Backend.enums.Repeatable;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, ExpenseRepository> implements ExpenseService {
@@ -40,19 +38,19 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
             newModel.setLeadTime(0);
         }
-        threatStrings(newModel);
+        treatStrings(newModel);
         createFutureExpenses(newModel);
     }
 
-    @Override
-    public Page<Expense> listAllByIdPage(Long id, Pageable page) {
-        return repository.findByUserId(id, page);
+    private static void treatStrings(Expense newModel) {
+        newModel.setDescription(newModel.getDescription().trim());
+        newModel.setName(newModel.getName().trim().toUpperCase());
     }
 
-
     private void getCategory(Expense newModel) {
-        Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName(), newModel.getUser().getId());
+        Category category = categoryService.getCategoryByNameAndUserId(newModel.getCategory().getName().trim(), newModel.getUser().getId());
         if(Objects.isNull(category)){
+            newModel.getCategory().setName(newModel.getCategory().getName().trim().toUpperCase());
             category = categoryService.create(newModel.getCategory());
             category.setUser(newModel.getUser());
             category.setIExpense(false);
@@ -75,7 +73,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         validateBusinessLogic(newModel);
         validateAmbiguous(newModel);
         if(newModel.getLeadTime() < 0){
-            throw new InvalidParameterException("expense",  "LeadTime must be higher than -1: ");
+            throw new InvalidParameterException("expense",  "A repetição deve ser maior que -1: ");
         }
     }
 
@@ -86,17 +84,16 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
      * similar im crucial attributes that make
      * them both invalids by the business logic
      *
-     * @throws BusinessException ErrorValidation.GENERAL
      */
     private void validateAmbiguous(Expense newModel) {
         List<Expense> similarModels = repository.findAllByNameIgnoreCaseAndUserId(newModel.getName(), newModel.getUser().getId());
 
         for(Expense similarModel : similarModels){
 
-            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description"})
+            if(ModelReflection.isFieldsIdentical(newModel, similarModel, new String[]{"amount", "leadTime", "description", "name"})
                     && !Objects.equals(similarModel.getId(), newModel.getId())){
                 throw new InvalidParameterException("expense",
-                        "Entitys are too similar : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
+                        "Entidades muito similares encontradas : \nmodelPosted : "+ newModel + " \nsimilarModel: " + similarModel);
             }
         }
     }
@@ -105,6 +102,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
     protected void prepareToUpdate(Expense newModel, Expense model) {
         getUser(newModel);
         getCategory(newModel);
+        treatStrings(newModel);
         if (Objects.isNull(newModel.getRepeatable()) || Objects.isNull(newModel.getRepeatable().getName())) {
             newModel.setRepeatable(Repeatable.DONT_REPEATS);
             newModel.setLeadTime(0);
@@ -116,15 +114,10 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
                     model.getCategory(),
                     model.getExpenseDate()
             );
-            threatStrings(newModel);
             createFutureExpenses(newModel);
         }
     }
 
-    private static void threatStrings(Expense newModel) {
-        newModel.setDescription(newModel.getDescription().trim());
-        newModel.setName(newModel.getName().trim());
-    }
 
     @Override
     protected void validateBusinessLogicToUpdate(Expense model) {
@@ -136,31 +129,31 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
     @Override
     protected void validateBusinessLogic(Expense model) {
         if(Objects.isNull(model)){
-            throw new InvalidParameterException("expense",  "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("expense",  "Entidade nula");
         }
         if(model.getAmount() <= 0.0 || model.getAmount() >= 14000000 )
         {
-            throw new InvalidParameterException("expense", "Amount is invalid!: Must be higher than 0.0 and lower than 14000000 ");
+            throw new InvalidParameterException("expense", "Valor inválido!: Deve ser maior que 0.0 e menor que 14000000");
         }
         if(Objects.isNull(model.getUser()))
         {
-            throw new InvalidParameterException("expense", "Missing user");
+            throw new InvalidParameterException("expense", "Usuário não encontrado!");
         }
-
     }
 
     @Override
     public List<Expense> listAll() {
-        return repository.findAllByExpenseDateBeforeOrExpenseDateEquals(LocalDate.now(), LocalDate.now());
+        return null;
     }
 
     @Override
     public List<Expense> listAll(Long userId) {
-        return repository.findAllByUserId(userId);
+        return repository.findAllByUserIdAndExpenseDateBefore(userId, LocalDate.now().plusDays(1));
     }
 
-    public List<Expense> listAllContemporaneous(Long userId) {
-        return repository.findAllByUserIdAndExpenseDateBefore(userId, LocalDate.now().plusDays(1));
+    @Override
+    public Page<Expense> listAllByIdPage(Long id, Pageable page) {
+        return repository.findByUserIdAndExpenseDateBefore(id, LocalDate.now().plusDays(1), page);
     }
 
     protected Expense validateId(Long id) {
@@ -195,7 +188,7 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
             case WEEKLY -> currentDate.plusWeeks(1);
             case MONTHLY -> currentDate.plusMonths(1);
             case YEARLY -> currentDate.plusYears(1);
-            default -> throw new IllegalArgumentException("Unsupported Repeatable type: " + repeatable);
+            default -> throw new IllegalArgumentException("Tipo de repetição não suportada: " + repeatable);
         };
     }
 

@@ -46,4 +46,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
 
     List<Expense> findAllByNameIgnoreCaseAndUserId(String name, Long id);
 
+    Page<Expense> findByUserIdAndExpenseDateBefore(Long id, LocalDate localDate, Pageable page);
 }
