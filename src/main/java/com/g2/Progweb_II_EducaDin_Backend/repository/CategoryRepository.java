@@ -12,4 +12,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByName(String name);
     List<Category> findByIExpense(boolean IExpense);
     Category findByNameEqualsIgnoreCase(String name);
+    List<Category> findAllByUserId(long userId);
 }

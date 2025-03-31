@@ -12,4 +12,5 @@ public record ExpenseListDTO(Long id,
                              Double amount,
                              Integer leadTime,
                              Repeatable repeatable,
-                             LocalDate expenseDate) { }
+                             LocalDate expenseDate,
+                             Long userId) { }

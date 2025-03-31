@@ -10,4 +10,5 @@ public record ExpenseDTOCreateUpdate(String categoryName,
                                      Double amount,
                                      LocalDate expenseDate,
                                      Repeatable repeatable,
-                                     Integer leadTime) { }
+                                     Integer leadTime,
+                                     Long userId) { }

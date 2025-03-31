@@ -1,11 +1,15 @@
 package com.g2.Progweb_II_EducaDin_Backend.service.impl;
 
 import br.ueg.progweb2.arquitetura.exceptions.BusinessException;
-import br.ueg.progweb2.arquitetura.exceptions.ErrorValidation;
 import br.ueg.progweb2.arquitetura.service.impl.GenericCrudService;
+import com.g2.Progweb_II_EducaDin_Backend.enums.ErrorValidation;
+import com.g2.Progweb_II_EducaDin_Backend.model.Notification;
 import com.g2.Progweb_II_EducaDin_Backend.model.NotificationPreference;
+import com.g2.Progweb_II_EducaDin_Backend.model.User;
 import com.g2.Progweb_II_EducaDin_Backend.repository.NotificationPreferenceRepository;
+import com.g2.Progweb_II_EducaDin_Backend.repository.UserRepository;
 import com.g2.Progweb_II_EducaDin_Backend.service.NotificationPreferenceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,20 +19,22 @@ import java.util.Objects;
 public class NotificationPreferenceServiceImpl extends GenericCrudService<NotificationPreference, Long, NotificationPreferenceRepository>
         implements NotificationPreferenceService {
 
-    @Override
-    protected void validateBusinessToList(List<NotificationPreference> preferences) {
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void prepareToCreate(NotificationPreference newModel) {
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
     @Override
     protected void validateBusinessLogicToCreate(NotificationPreference newModel) {
         validateBusinessLogic(newModel);
-        if (repository.existsByUserIdAndType(newModel.getUserId(), newModel.getType())) {
-            throw new BusinessException("A preference for this type already exists for the user.",
-                    ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+        if (repository.existsByUserIdAndType(newModel.getUser().getId(), newModel.getType())) {
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "A preference for this type already exists for the user.");
         }
     }
 
@@ -37,33 +43,36 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
         if (newModel.getEnabled() != model.isEnabled()) {
             model.setEnabled(newModel.isEnabled());
         }
+        User user = userRepository.findById(newModel.getUser().getId()).orElse(null);
+        if (user != null) {
+            newModel.setUser(user);
+        }
     }
 
 
     @Override
     protected void validateBusinessLogicToUpdate(NotificationPreference model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException("Model is null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException( ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Model is null.");
         }
         if (Objects.isNull(model.getEnabled())) {
-            throw new BusinessException("Enabled field cannot be null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION, "Enabled field cannot be null.");
         }
-    }
-
-    @Override
-    protected void validateBusinessLogicToDelete(NotificationPreference model) {
     }
 
     @Override
     protected void validateBusinessLogic(NotificationPreference model) {
         if (Objects.isNull(model)) {
-            throw new BusinessException("Model is null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                    "Model is null." );
         }
-        if (Objects.isNull(model.getUserId())) {
-            throw new BusinessException("User ID cannot be null.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+        if (Objects.isNull(model.getUser().getId())) {
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                    "User ID cannot be null.");
         }
         if (Objects.isNull(model.getType()) || model.getType().isEmpty()) {
-            throw new BusinessException("Notification type cannot be null or empty.", ErrorValidation.BUSINESS_LOGIC_VIOLATION);
+            throw new BusinessException(ErrorValidation.BUSINESS_LOGIC_VIOLATION,
+                    "Notification type cannot be null or empty.");
         }
     }
 
@@ -73,12 +82,8 @@ public class NotificationPreferenceServiceImpl extends GenericCrudService<Notifi
     }
 
     @Override
-    public NotificationPreference deleteById(Long id) {
-        NotificationPreference model = validateId(id);
-        if (Objects.isNull(model)) {
-            throw new BusinessException("Notification preference not found.", ErrorValidation.NOT_FOUND);
-        }
-        return delete(id);
+    public List<NotificationPreference> listAll(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
     @Override

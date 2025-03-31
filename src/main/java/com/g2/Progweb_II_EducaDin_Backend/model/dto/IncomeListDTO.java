@@ -12,5 +12,6 @@ public record IncomeListDTO(Long id,
                             Double amount,
                             Integer leadTime,
                             Repeatable repeatable,
-                            LocalDate incomeDate) {
+                            LocalDate incomeDate,
+                            Long userId) {
 }

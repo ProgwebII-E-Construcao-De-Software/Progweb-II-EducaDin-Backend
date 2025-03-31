@@ -4,4 +4,5 @@ import java.time.LocalDate;
 
 public record GoalDTOCreate(String name,
                             Double amountTotal,
-                            LocalDate goalDate) { }
+                            LocalDate goalDate,
+                            Long userId) { }

@@ -10,7 +10,8 @@ public record ExpenseDTO(Long id,
                         String name,
                         String description,
                         Double amount,
-                         Repeatable repeatable,
+                        Repeatable repeatable,
                         Integer leadTime,
-                        LocalDate expenseDate) {
+                        LocalDate expenseDate,
+                        Long userId) {
 }
