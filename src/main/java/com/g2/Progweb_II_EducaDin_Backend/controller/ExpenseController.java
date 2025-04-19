@@ -101,7 +101,7 @@ public class ExpenseController extends GenericCRUDController<
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = MessageResponse.class)))
     })
-    public ResponseEntity<Page<ExpenseListDTO>> searchFieldsActionPage(
+    public ResponseEntity<Page<ExpenseListDTO>> searchFieldsActionPageExpense(
             @RequestBody List<SearchFieldValue> searchFieldValues,
             @RequestParam(name = "page", defaultValue = "0", required = false)  Integer page,
             @RequestParam(name = "size", defaultValue = "5", required = false)  Integer size,
