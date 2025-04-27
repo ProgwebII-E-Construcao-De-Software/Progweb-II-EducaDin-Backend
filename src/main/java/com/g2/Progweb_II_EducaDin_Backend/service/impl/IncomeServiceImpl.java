@@ -143,7 +143,7 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
 
     @Override
     public List<Income> listAll() {
-        return null;
+        return repository.findAll();
     }
 
     @Override

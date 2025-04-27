@@ -48,7 +48,7 @@ public class IncomeController extends GenericCRUDController<
         this.incomeMapper = incomeMapper;
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_INCOME_READ')")
+//    @PreAuthorize(value = "hasRole('ROLE_INCOME_READ')")
     @GetMapping(path = "/user/{id}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(description = "Obter os dados completos de uma entidiade pelo id do usuario informado!", responses = {
@@ -72,7 +72,7 @@ public class IncomeController extends GenericCRUDController<
         return ResponseEntity.ok(dtoResult);
     }
 
-    @PreAuthorize(value = "hasRole(#root.this.getRoleName(#root.this.ROLE_READ_ALL))")
+//    @PreAuthorize(value = "hasRole(#root.this.getRoleName(#root.this.ROLE_READ_ALL))")
     @GetMapping(
             path = "/page/user/{id}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
