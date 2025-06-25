@@ -102,6 +102,26 @@ public class GoalServiceImpl extends GenericCrudService<Goal, Long, GoalReposito
     }
 
     @Override
+    public Double getTotalReached(Long id) {
+        List<Goal> goals = repository.findAllByUserId(id);
+        double sum = 0.0;
+        sum = goals.stream()
+                .mapToDouble(Goal::getAmountReached)
+                .sum();
+        return sum;
+    }
+
+    @Override
+    public Double getTotalAmountTotal(Long id) {
+        List<Goal> goals = repository.findAllByUserId(id);
+        double sum = 0.0;
+        sum = goals.stream()
+                .mapToDouble(Goal::getAmountTotal)
+                .sum();
+        return sum;
+    }
+
+    @Override
     public Goal deleteById(Long id) {
         Goal model = validateId(id);
         if (Objects.nonNull(model)) {

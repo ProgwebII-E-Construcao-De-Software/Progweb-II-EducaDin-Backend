@@ -67,6 +67,52 @@ public class GoalController extends GenericCRUDController<
         return ResponseEntity.ok(dtoResult);
     }
 
+    @GetMapping(path = "total/atingido/user/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(description = "Obter o valor total pelo id do usuario informado!", responses = {
+            @ApiResponse(responseCode = "200", description = "Entidade encontrada",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "Registro não encontrado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Acesso negado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de Negócio",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class)))
+    })
+    public ResponseEntity<Double> getTotalReached(
+            @Parameter(description = "Id do usuario")
+            @PathVariable("id") Long id
+    ) {
+        Double result = service.getTotalReached(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(path = "total/metas/user/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Operation(description = "Obter o valor total pelo id do usuario informado!", responses = {
+            @ApiResponse(responseCode = "200", description = "Entidade encontrada",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "Registro não encontrado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Acesso negado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de Negócio",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class)))
+    })
+    public ResponseEntity<Double> getTotalAmountTotal(
+            @Parameter(description = "Id do usuario")
+            @PathVariable("id") Long id
+    ) {
+        Double result = service.getTotalAmountTotal(id);
+        return ResponseEntity.ok(result);
+    }
+
     @PreAuthorize(value = "hasRole(#root.this.getRoleName(#root.this.ROLE_READ_ALL))")
     @GetMapping(
             path = "/page/user/{id}",

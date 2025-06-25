@@ -156,6 +156,16 @@ public class ExpenseServiceImpl extends GenericCrudService<Expense, Long, Expens
         return repository.findByUserIdAndExpenseDateBefore(id, LocalDate.now().plusDays(1), page);
     }
 
+    @Override
+    public Double getTotal(Long id) {
+        List<Expense> exp = repository.findAllByUserId(id);
+        double sum = 0.0;
+        sum = exp.stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+        return sum;
+    }
+
     protected Expense validateId(Long id) {
         Optional<Expense> expenseOptional = repository.findById(id);
         return expenseOptional.orElse(null);

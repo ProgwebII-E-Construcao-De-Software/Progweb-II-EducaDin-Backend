@@ -13,4 +13,5 @@ public interface IncomeService extends CrudService<Income, Long> {
     List<Income> listAll(Long userId);
     Page<Income> listAllByIdPage(Long id, Pageable page);
 
+    Double getTotal(Long id);
 }

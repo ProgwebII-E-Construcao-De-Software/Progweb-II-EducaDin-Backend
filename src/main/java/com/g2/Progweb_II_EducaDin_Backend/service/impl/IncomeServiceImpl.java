@@ -156,6 +156,16 @@ public class IncomeServiceImpl extends GenericCrudService<Income, Long, IncomeRe
         return repository.findByUserIdAndIncomeDateBefore(id, LocalDate.now().plusDays(1), page);
     }
 
+    @Override
+    public Double getTotal(Long id) {
+        List<Income> incomes = repository.findAllByUserId(id);
+        double sum = 0.0;
+        sum = incomes.stream()
+                .mapToDouble(Income::getAmount)
+                .sum();
+        return sum;
+    }
+
     protected Income validateId(Long id) {
         Optional<Income> incomeOptional = repository.findById(id);
         return incomeOptional.orElse(null);

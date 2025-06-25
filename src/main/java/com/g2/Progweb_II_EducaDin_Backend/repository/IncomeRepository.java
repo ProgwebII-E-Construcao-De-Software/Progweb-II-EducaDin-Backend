@@ -40,6 +40,5 @@ public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecif
             @Param("category") Category category,
             @Param("date") LocalDate date
     );
-
     List<Income> findAllByNameIgnoreCaseAndUserId(String name, Long id);
 }

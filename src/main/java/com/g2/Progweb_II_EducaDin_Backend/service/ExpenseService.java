@@ -14,4 +14,5 @@ public interface ExpenseService extends CrudService<Expense, Long> {
 
     Page<Expense> listAllByIdPage(Long id, Pageable page);
 
+    Double getTotal(Long id);
 }
